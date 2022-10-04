@@ -9,6 +9,29 @@ function preload () {
 }
 
 function create () {
+	pubnub.PubNub({
+		subscribeKey: string,
+		publishKey: string,
+		cipherKey: string,
+		authKey: string,
+		logVerbosity: boolean,
+		userId: string
+		ssl: boolean,
+		origin: string,
+		presenceTimeout: number,
+		heartbeatInterval: number,
+		restore: boolean,
+		keepAlive: boolean,
+		keepAliveSettings: any,
+		useInstanceId: boolean,
+		suppressLeaveEvents: boolean,
+		requestMessageCountThreshold: number,
+		autoNetworkDetection: boolean,
+		listenToBrowserNetworkEvents: boolean
+		// Deprecated, use userId instead
+		userId: string,
+	  });
+	  
 	const platforms = this.physics.add.staticGroup();
  
 	platforms.create(320, 350, 'platform').setScale(2, 0.5).refreshBody();
@@ -73,8 +96,8 @@ function update () {
 
 const config = {
   type: Phaser.AUTO,
-  width: 640,
-	height: 360,
+  width: 1280,
+	height: 800,
 	backgroundColor: "b9eaff",
 	physics: {
 		default: 'arcade',
