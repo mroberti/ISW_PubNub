@@ -2,8 +2,8 @@ const rand = Phaser.Math.Between;
 
 const config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: 1280,
+  height: 720,
   parent: "game-container",
   pixelArt: true,
   scene: {
@@ -28,6 +28,7 @@ var groupconfig = {
     removeCallback: null,
     createMultipleCallback: null
 }
+
 
 function preload() {
 	this.load.multiatlas('allships', '/assets/ships/allships.json', 'assets');
@@ -111,9 +112,51 @@ function create() {
 		speed: 0.5
 	});
 
+	
+
+	pubnub = new PubNub({
+		subscribeKey: "sub-c-145f75fb-ad86-47bb-b8cb-daefe1fd6a0c",
+		publishKey: "pub-c-c09f0e14-9b62-451b-abfa-bd0830adc01c",
+		uuid: "player1"
+	  });
+
+	const newMessage = {
+		text: "Hi There!",
+	};
+	
+	pubnub.publish({
+		message: newMessage,
+		channel: "my_channel",
+	});
+
+	// paste below "add listener" comment
+	const listener = {
+		status: (statusEvent) => {
+			if (statusEvent.category === "PNConnectedCategory") {
+				// Help text that has a "fixed" position on the screen
+				this.add
+				.text(16, 16, "Connected to dem sweet sweet PubNubbery", {
+					font: "18px monospace",
+					fill: "#ffffff",
+					padding: { x: 60, y: 10 },
+					backgroundColor: "#00000000"
+				})
+				console.log("Damn you sir: ", result);
+			}
+		},
+		message: (messageEvent) => {
+			showMessage(messageEvent.message.description);
+			console.log("message published w/ server response: ", result);
+		},
+		presence: (presenceEvent) => {
+			// handle presence
+		}
+	};
+	pubnub.addListener(listener);
 
 
 	var background = this.add.tileSprite(0, 0, camera.width, camera.height, 'background').setInteractive();
+	BackgroundScroll(background,this);
 	var ships = ["e2 titan.png","e3 destroyer.png"];
 	console.log("The stuff "+data.textures[0].frames[0].filename);
 	var string = "foo",
@@ -159,3 +202,4 @@ function update(time, delta) {
 		
 	}
 }
+
