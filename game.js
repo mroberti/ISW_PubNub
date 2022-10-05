@@ -93,6 +93,12 @@ function BackgroundScroll(theSprite,passedThis){
 }
 
 function create() {
+	InitPubNub();
+
+	const helloButton = this.add.text(100, 100, 'Hello Phaser!', { fill: '#0f0' });
+    helloButton.setInteractive();
+
+    helloButton.on('pointerover', () => { console.log('pointerover'); });
 	// in create()
 	let data = this.cache.json.get('sheetdata');
 
@@ -112,56 +118,16 @@ function create() {
 		speed: 0.5
 	});
 
-	
-
-	pubnub = new PubNub({
-		subscribeKey: "sub-c-145f75fb-ad86-47bb-b8cb-daefe1fd6a0c",
-		publishKey: "pub-c-c09f0e14-9b62-451b-abfa-bd0830adc01c",
-		uuid: "player1"
-	  });
-
-	const newMessage = {
-		text: "Hi There!",
-	};
-	
-	pubnub.publish({
-		message: newMessage,
-		channel: "my_channel",
-	});
-
-	// paste below "add listener" comment
-	const listener = {
-		status: (statusEvent) => {
-			if (statusEvent.category === "PNConnectedCategory") {
-				// Help text that has a "fixed" position on the screen
-				this.add
-				.text(16, 16, "Connected to dem sweet sweet PubNubbery", {
-					font: "18px monospace",
-					fill: "#ffffff",
-					padding: { x: 60, y: 10 },
-					backgroundColor: "#00000000"
-				})
-				console.log("Damn you sir: ", result);
-			}
-		},
-		message: (messageEvent) => {
-			showMessage(messageEvent.message.description);
-			console.log("message published w/ server response: ", result);
-		},
-		presence: (presenceEvent) => {
-			// handle presence
-		}
-	};
-	pubnub.addListener(listener);
-
-
 	var background = this.add.tileSprite(0, 0, camera.width, camera.height, 'background').setInteractive();
 	BackgroundScroll(background,this);
 	var ships = ["e2 titan.png","e3 destroyer.png"];
 	console.log("The stuff "+data.textures[0].frames[0].filename);
-	var string = "foo",
-    substring = "oo";
-	console.log(string.includes(substring));
+
+	// // Check for substring
+	// var string = "foo",
+    // substring = "oo";
+	// console.log(string.includes(substring));
+
 	for (let index = 0; index < data.textures[0].frames.length; index++) {
 		var fileName = data.textures[0].frames[index].filename
 		if(fileName.includes("e2")){
@@ -181,6 +147,56 @@ function create() {
 		backgroundColor: "#00000000"
 	})
 	.setScrollFactor(0);
+}
+
+function InitPubNub(){
+	console.log("Initializing PubNub hypothetically")
+	this.pubnub = new PubNub({
+		subscribeKey: _subscribeKey,
+		publishKey: _publishKey,
+		uuid: "player1"
+	  });
+
+	this.pubnub.addListener({
+		message: function (m) {
+		  // handle messages
+		   console.log(m.message.title)
+		},
+		presence: function (p) {
+		  // handle presence  
+		},
+		signal: function (s) {
+		  // handle signals
+		},
+		objects: (objectEvent) => {
+		  // handle objects
+		},
+		messageAction: function (ma) {
+		  // handle message actions
+		},
+		file: function (event) {
+		  // handle files  
+		},
+		status: function (s) {
+		// handle status  
+		},
+	  });
+
+	  var publishPayload = {
+		channel : "my_channel",
+		message: {
+			title: "greeting",
+			description: "This is my first message!"
+		}
+	}
+		
+	this.pubnub.subscribe({
+		channels: ["my_channel"]
+	});
+
+	this.pubnub.publish(publishPayload, function(status, response) {
+		console.log(status, response);
+	})
 }
 
 function update(time, delta) {
