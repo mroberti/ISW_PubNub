@@ -29,7 +29,6 @@ var groupconfig = {
     createMultipleCallback: null
 }
 
-
 function preload() {
 	this.load.multiatlas('allships', '/assets/ships/allships.json', 'assets');
 	this.load.image("background", "/assets/backgrounds/background2.jpg");
@@ -182,12 +181,36 @@ function InitPubNub(){
 		},
 	  });
 
+	  
+	Date.prototype.toUnixTime = function() { return this.getTime()/1000|0 };
+	Date.time = function() { return new Date().toUnixTime(); }
+	console.log("Date: "+Date.time());
+	  // start, end, count are optional
+	pubnub.fetchMessages(
+		{
+			channels: ['my_channel'],
+			end: '1664910000000',
+			count: 100
+		},
+		(status, response) => {
+			console.log(response)
+		}
+	);
+
 	  var publishPayload = {
 		channel : "my_channel",
 		message: {
 			title: "greeting",
 			description: "This is my first message!"
 		}
+	}
+
+	var gameBoard = {
+		"name":"Kobayashi Maru",
+		"subject vessels": ["FR DD Reliant","FR DD Reliant"
+
+		],
+		"location": "3 points from Altair 6"
 	}
 		
 	this.pubnub.subscribe({
