@@ -160,7 +160,7 @@ function InitPubNub(){
 	this.pubnub.addListener({
 		message: function (m) {
 		  // handle messages
-		   console.log(m.message.title)
+		   console.log(m.message.description)
 		},
 		presence: function (p) {
 		  // handle presence  
