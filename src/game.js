@@ -30,10 +30,11 @@ var groupconfig = {
 }
 
 function preload() {
-	this.load.multiatlas('allships', '/assets/ships/allships.json', 'assets');
-	this.load.image("background", "/assets/backgrounds/background2.jpg");
+	this.load.path = 'assets/';
+	this.load.multiatlas('allships', '/ships/allships.json');
+	this.load.image("background", "/backgrounds/background2.jpg");
 	// in preload()
-	this.load.json('sheetdata', '/assets/ships/allships.json');
+	this.load.json('sheetdata', '/ships/allships.json');
 }
 
 function MakeDraggable(theSprite,passedThis,passedCamera){
@@ -93,12 +94,6 @@ function BackgroundScroll(theSprite,passedThis){
 
 function create() {
 	InitPubNub();
-
-	const helloButton = this.add.text(100, 100, 'Hello Phaser!', { fill: '#0f0' });
-    helloButton.setInteractive();
-
-    helloButton.on('pointerover', () => { console.log('pointerover'); });
-	helloButton.up('button up', () => { console.log('button up'); });
 
 	// in create()
 	let data = this.cache.json.get('sheetdata');
