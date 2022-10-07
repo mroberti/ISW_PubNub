@@ -98,8 +98,11 @@ function create() {
     helloButton.setInteractive();
 
     helloButton.on('pointerover', () => { console.log('pointerover'); });
+	helloButton.up('button up', () => { console.log('button up'); });
+
 	// in create()
 	let data = this.cache.json.get('sheetdata');
+	
 
 	// Phaser supports multiple cameras, but you can access the default camera like this:
 	const camera = this.cameras.main;
