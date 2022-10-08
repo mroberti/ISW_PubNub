@@ -1,5 +1,4 @@
 const rand = Phaser.Math.Between;
-
 const config = {
   type: Phaser.AUTO,
   width: 1280,
@@ -35,6 +34,7 @@ function preload() {
 	this.load.image("background", "/backgrounds/background2.jpg");
 	// in preload()
 	this.load.json('sheetdata', '/ships/allships.json');
+	
 }
 
 function MakeDraggable(theSprite,passedThis,passedCamera){
@@ -93,6 +93,13 @@ function BackgroundScroll(theSprite,passedThis){
 }
 
 function create() {
+
+    this.clickCount = 0;
+    this.clickCountText = this.add.text(100, 200, '');
+
+    this.clickButton = new TextButton(this, 100, 100, 'Click me!', { fill: '#0f0'}, () => doStuff());
+    this.add.existing(this.clickButton);
+
 	InitPubNub();
 
 	// in create()
@@ -184,16 +191,16 @@ function InitPubNub(){
 	Date.time = function() { return new Date().toUnixTime(); }
 	console.log("Date: "+Date.time());
 	  // start, end, count are optional
-	pubnub.fetchMessages(
-		{
-			channels: ['my_channel'],
-			end: '1664910000000',
-			count: 100
-		},
-		(status, response) => {
-			console.log(response)
-		}
-	);
+	// pubnub.fetchMessages(
+	// 	{
+	// 		channels: ['my_channel'],
+	// 		end: '1664910000000',
+	// 		count: 100
+	// 	},
+	// 	(status, response) => {
+	// 		console.log(response)
+	// 	}
+	// );
 
 	  var publishPayload = {
 		channel : "my_channel",
@@ -218,6 +225,10 @@ function InitPubNub(){
 	this.pubnub.publish(publishPayload, function(status, response) {
 		console.log(status, response);
 	})
+}
+
+function doStuff() {
+	console.log("MOIST")
 }
 
 function update(time, delta) {
