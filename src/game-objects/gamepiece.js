@@ -1,6 +1,6 @@
-class Gamepiece extends Phaser.GameObjects {
-	constructor(scene, x, y) {
-	  super(scene, x, y, pieceName, sprite);
+class Gamepiece extends Phaser.GameObjects.Text {
+	constructor(scene, x, y, text, style, callback) {
+	  super(scene, x, y, text, style);
   
 	  this.setInteractive({ useHandCursor: true })
 		.on('pointerover', () => this.enterButtonHoverState() )
@@ -12,4 +12,15 @@ class Gamepiece extends Phaser.GameObjects {
 		});
 	}
   
+	enterButtonHoverState() {
+	  this.setStyle({ fill: '#ff0'});
+	}
+  
+	enterButtonRestState() {
+	  this.setStyle({ fill: '#0f0'});
+	}
+  
+	enterButtonActiveState() {
+	  this.setStyle({ fill: '#0ff' });
+	}
   }

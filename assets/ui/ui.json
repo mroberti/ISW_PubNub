@@ -1,7 +1,7 @@
 {
 	"textures": [
 		{
-			"image": "ui.png",
+			"image": "/ui/ui.png",
 			"format": "RGBA8888",
 			"size": {
 				"w": 1951,

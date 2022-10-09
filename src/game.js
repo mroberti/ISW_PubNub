@@ -1,49 +1,44 @@
 const rand = Phaser.Math.Between;
 const config = {
-  type: Phaser.AUTO,
-  width: 1280,
-  height: 720,
-  parent: "game-container",
-  pixelArt: true,
-  scene: {
-	preload: preload,
-	create: create,
-	update: update
-  }
+	type: Phaser.AUTO,
+	width: 1280,
+	height: 720,
+	parent: "game-container",
+	pixelArt: true,
+	scene: {
+		preload: preload,
+		create: create,
+		update: update
+	}
 };
-var menu = add.menu(config);
+
 const game = new Phaser.Game(config);
 let controls;
 var ships = []
 var shipGroup
 var groupconfig = {
-    classType: Phaser.GameObjects.Sprite,
-    defaultKey: null,
-    defaultFrame: null,
-    active: true,
-    maxSize: -1,
-    runChildUpdate: true,
-    createCallback: null,
-    removeCallback: null,
-    createMultipleCallback: null
+	classType: Phaser.GameObjects.Sprite,
+	defaultKey: null,
+	defaultFrame: null,
+	active: true,
+	maxSize: -1,
+	runChildUpdate: true,
+	createCallback: null,
+	removeCallback: null,
+	createMultipleCallback: null
 }
 
 function preload() {
 	this.load.path = 'assets/';
-	this.load.multiatlas('allships', '/ships/allships.json');
+	this.load.multiatlas('ship_textures', '/ships/allships.json');
+	this.load.json('ship_sheetdata', '/ships/allships.json');
+	this.load.multiatlas('ui_textures', '/ui/ui.json');
+	this.load.json('ui_sheetdata', '/ui/ui.json');
 	this.load.image("background", "/backgrounds/background2.jpg");
-	// in preload()
-	this.load.json('sheetdata', '/ships/allships.json');
-	
 }
 
-function MakeDraggable(theSprite,passedThis,passedCamera){
+function MakeDraggable(theSprite, passedThis, passedCamera) {
 	// Let's put them randomly somewhere for now...
-
-	theSprite.x = rand(1,passedCamera.width);
-	theSprite.y = rand(1,passedCamera.height);
-	theSprite.angle = rand(0,359);
-	theSprite.setScale(.5);
 	theSprite.on('pointerover', function () {
 		this.setTint(0x00ff00);
 	});
@@ -67,7 +62,7 @@ function MakeDraggable(theSprite,passedThis,passedCamera){
 	});
 }
 
-function BackgroundScroll(theSprite,passedThis){
+function BackgroundScroll(theSprite, passedThis) {
 	theSprite.setScale(.5);
 	theSprite.on('pointerover', function () {
 		this.setTint(0x00ff00);
@@ -84,7 +79,7 @@ function BackgroundScroll(theSprite,passedThis){
 
 	passedThis.input.on('drag', function (pointer, gameObject, dragX, dragY) {
 		gameObject.tilePositionX = dragX;
-		gameObject.tilePositionY  = dragY;
+		gameObject.tilePositionY = dragY;
 	});
 
 	passedThis.input.on('dragend', function (pointer, gameObject) {
@@ -93,18 +88,11 @@ function BackgroundScroll(theSprite,passedThis){
 }
 
 function create() {
-
-    this.clickCount = 0;
-    this.clickCountText = this.add.text(100, 200, '');
-
-    this.clickButton = new TextButton(this, 100, 100, 'Click me!', { fill: '#0f0'}, () => doStuff());
-    this.add.existing(this.clickButton);
-
 	InitPubNub();
 
 	// in create()
-	let data = this.cache.json.get('sheetdata');
-	
+	let ship_data = this.cache.json.get('ship_sheetdata');
+	let ui_data = this.cache.json.get('ui_sheetdata');
 
 	// Phaser supports multiple cameras, but you can access the default camera like this:
 	const camera = this.cameras.main;
@@ -123,74 +111,95 @@ function create() {
 	});
 
 	var background = this.add.tileSprite(0, 0, camera.width, camera.height, 'background').setInteractive();
-	BackgroundScroll(background,this);
-	var ships = ["e2 titan.png","e3 destroyer.png"];
-	console.log("The stuff "+data.textures[0].frames[0].filename);
+	BackgroundScroll(background, this);
+	var ships = ["e2 titan.png", "e3 destroyer.png"];
+	console.log("The stuff " + ship_data.textures[0].frames[0].filename);
 
 	// // Check for substring
 	// var string = "foo",
-    // substring = "oo";
+	// substring = "oo";
 	// console.log(string.includes(substring));
 
-	for (let index = 0; index < data.textures[0].frames.length; index++) {
-		var fileName = data.textures[0].frames[index].filename
-		if(fileName.includes("e2")){
-			var tempShip = this.add.sprite(0, 0, 'allships', fileName).setInteractive();
-			MakeDraggable(tempShip,this,camera);
+	for (let index = 0; index < ship_data.textures[0].frames.length; index++) {
+		var fileName = ship_data.textures[0].frames[index].filename
+		if (fileName.includes("e2")) {
+			var tempShip = this.add.sprite(0, 0, 'ship_textures', fileName).setInteractive();
+			MakeDraggable(tempShip, this, camera);
 			shipGroup.add(tempShip);
+			tempShip.x = rand(1, camera.width);
+			tempShip.y = rand(1, camera.height);
+			tempShip.angle = rand(0, 359);
+			tempShip.setScale(.5);
 			// group.add(gameObject, true);  // add this game object to display and update list of scene
 		}
-	}	
-	
+	}
+
 	// Help text that has a "fixed" position on the screen
 	this.add
-	.text(16, 16, "Arrow keys to scroll", {
-		font: "18px monospace",
-		fill: "#ffffff",
-		padding: { x: 20, y: 10 },
-		backgroundColor: "#00000000"
-	})
-	.setScrollFactor(0);
+		.text(16, 16, "Arrow keys to scroll", {
+			font: "18px monospace",
+			fill: "#ffffff",
+			padding: { x: 20, y: 10 },
+			backgroundColor: "#00000000"
+		})
+		.setScrollFactor(0);
+	
+	// Add a window from our UI as a test
+	// var temp_UI = this.add.sprite(100, 100, 'ui_textures','right_screen_texture.png').setInteractive();
+	// MakeDraggable(temp_UI, this, camera);
+
+
+	var button = new BasicButton({
+		'scene': this,
+		'sheet_data': "ui_textures",
+		'key':'buttons',
+		'down': "wide_button_h.png",
+		'up':"wide_button_p.png",
+		'over':"wide_button_n.png",
+		'x': 240,
+		'y': 480
+	});
+	button.on('pointerdown',doStuff,this);
 }
 
-function InitPubNub(){
+function InitPubNub() {
 	console.log("Initializing PubNub hypothetically")
 	this.pubnub = new PubNub({
 		subscribeKey: _subscribeKey,
 		publishKey: _publishKey,
 		uuid: "player1"
-	  });
+	});
 
 	this.pubnub.addListener({
 		message: function (m) {
-		  // handle messages
-		   console.log(m.message.description)
+			// handle messages
+			console.log(m.message.description)
 		},
 		presence: function (p) {
-		  // handle presence  
+			// handle presence  
 		},
 		signal: function (s) {
-		  // handle signals
+			// handle signals
 		},
 		objects: (objectEvent) => {
-		  // handle objects
+			// handle objects
 		},
 		messageAction: function (ma) {
-		  // handle message actions
+			// handle message actions
 		},
 		file: function (event) {
-		  // handle files  
+			// handle files  
 		},
 		status: function (s) {
-		// handle status  
+			// handle status  
 		},
-	  });
+	});
 
-	  
-	Date.prototype.toUnixTime = function() { return this.getTime()/1000|0 };
-	Date.time = function() { return new Date().toUnixTime(); }
-	console.log("Date: "+Date.time());
-	  // start, end, count are optional
+
+	Date.prototype.toUnixTime = function () { return this.getTime() / 1000 | 0 };
+	Date.time = function () { return new Date().toUnixTime(); }
+	console.log("Date: " + Date.time());
+	// start, end, count are optional
 	// pubnub.fetchMessages(
 	// 	{
 	// 		channels: ['my_channel'],
@@ -202,8 +211,8 @@ function InitPubNub(){
 	// 	}
 	// );
 
-	  var publishPayload = {
-		channel : "my_channel",
+	var publishPayload = {
+		channel: "my_channel",
 		message: {
 			title: "greeting",
 			description: "This is my first message!"
@@ -211,18 +220,18 @@ function InitPubNub(){
 	}
 
 	var gameBoard = {
-		"name":"Kobayashi Maru",
-		"subject vessels": ["FR DD Reliant","FR DD Reliant"
+		"name": "Kobayashi Maru",
+		"subject vessels": ["FR DD Reliant", "FR DD Reliant"
 
 		],
 		"location": "3 points from Altair 6"
 	}
-		
+
 	this.pubnub.subscribe({
 		channels: ["my_channel"]
 	});
 
-	this.pubnub.publish(publishPayload, function(status, response) {
+	this.pubnub.publish(publishPayload, function (status, response) {
 		console.log(status, response);
 	})
 }
@@ -247,6 +256,6 @@ function update(time, delta) {
 		tempShip.x = tempShip.x + speed_x;
 		tempShip.y = tempShip.y + speed_y;
 
-		
+
 	}
 }
