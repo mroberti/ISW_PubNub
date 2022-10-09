@@ -11,7 +11,7 @@ const config = {
 	update: update
   }
 };
-
+var menu = add.menu(config);
 const game = new Phaser.Game(config);
 let controls;
 var ships = []
@@ -250,4 +250,3 @@ function update(time, delta) {
 		
 	}
 }
-
