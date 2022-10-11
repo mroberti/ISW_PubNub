@@ -16,7 +16,9 @@ const game = new Phaser.Game(config);
 let controls;
 var ships = []
 var shipGroup
-var buttonGroup
+var text = '';
+var group1;
+var group2;
 
 var groupconfig = {
 	classType: Phaser.GameObjects.Sprite,
@@ -61,6 +63,7 @@ function MakeDraggable(theSprite, passedThis, passedCamera) {
 
 	passedThis.input.on('dragend', function (pointer, gameObject) {
 		gameObject.clearTint();
+		console.log("SKKKKA "+theSprite.name)
 	});
 }
 
@@ -99,8 +102,15 @@ function create() {
 	// Phaser supports multiple cameras, but you can access the default camera like this:
 	const camera = this.cameras.main;
 	shipGroup = this.make.group(groupconfig);
+
     //  Let's create 2 Groups
-    buttonGroup = this.add.group();
+    group1 = this.add.group();
+    group2 = this.add.group();
+
+    //  This will automatically inputEnable all children added to both Groups
+    group1.inputEnableChildren = true;
+    group2.inputEnableChildren = true;
+
 
 	// Set up the arrows to control the camera
 	const cursors = this.input.keyboard.createCursorKeys();
@@ -133,6 +143,7 @@ function create() {
 			tempShip.y = rand(1, camera.height);
 			tempShip.angle = rand(0, 359);
 			tempShip.setScale(.5);
+			tempShip.name = "Ship "+index
 			// group.add(gameObject, true);  // add this game object to display and update list of scene
 		}
 	}
@@ -150,10 +161,6 @@ function create() {
 		})
 		.setScrollFactor(0);
 
-	// Add a window from our UI as a test
-	// var temp_UI = this.add.sprite(100, 100, 'ui_textures','right_screen_texture.png').setInteractive();
-	// MakeDraggable(temp_UI, this, camera);
-
 	for (let i = 0; i < 2; i++) {
 		var button = new BasicButton({
 			'scene': this,
@@ -167,9 +174,11 @@ function create() {
 		});
 		button.name = "button " + (i+1);
 		console.log("Button " + button.name + " created");
-		button.on('pointerup',doStuff,this);
-		
 	}
+}
+
+function doStuff (info) {
+    console.log
 }
 
 function InitPubNub() {
@@ -248,11 +257,6 @@ function InitPubNub() {
 	this.pubnub.publish(publishPayload, function (status, response) {
 		console.log(status, response);
 	})
-}
-
-function onDown (sprite) {
-    text = "onDown: " + sprite.name;
-    sprite.tint = 0x00ff00;
 }
 
 function update(time, delta) {
