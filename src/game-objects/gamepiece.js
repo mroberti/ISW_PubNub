@@ -1,4 +1,4 @@
-class Gamepiece extends Phaser.GameObjects.Text {
+class Gamepiece extends Phaser.GameObjects.Container {
 	constructor(scene, x, y, text, style, callback) {
 	  super(scene, x, y, text, style);
   

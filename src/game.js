@@ -16,6 +16,8 @@ const game = new Phaser.Game(config);
 let controls;
 var ships = []
 var shipGroup
+var buttonGroup
+
 var groupconfig = {
 	classType: Phaser.GameObjects.Sprite,
 	defaultKey: null,
@@ -97,7 +99,8 @@ function create() {
 	// Phaser supports multiple cameras, but you can access the default camera like this:
 	const camera = this.cameras.main;
 	shipGroup = this.make.group(groupconfig);
-
+    //  Let's create 2 Groups
+    buttonGroup = this.add.group();
 
 	// Set up the arrows to control the camera
 	const cursors = this.input.keyboard.createCursorKeys();
@@ -139,27 +142,34 @@ function create() {
 		.text(16, 16, "Arrow keys to scroll", {
 			font: "18px monospace",
 			fill: "#ffffff",
-			padding: { x: 20, y: 10 },
+			padding: {
+				x: 20,
+				y: 10
+			},
 			backgroundColor: "#00000000"
 		})
 		.setScrollFactor(0);
-	
+
 	// Add a window from our UI as a test
 	// var temp_UI = this.add.sprite(100, 100, 'ui_textures','right_screen_texture.png').setInteractive();
 	// MakeDraggable(temp_UI, this, camera);
 
-
-	var button = new BasicButton({
-		'scene': this,
-		'sheet_data': "ui_textures",
-		'key':'buttons',
-		'down': "wide_button_h.png",
-		'up':"wide_button_p.png",
-		'over':"wide_button_n.png",
-		'x': 240,
-		'y': 480
-	});
-	button.on('pointerdown',doStuff,this);
+	for (let i = 0; i < 2; i++) {
+		var button = new BasicButton({
+			'scene': this,
+			'sheet_data': "ui_textures",
+			'key': 'buttons',
+			'down': "wide_button_h.png",
+			'up': "wide_button_p.png",
+			'over': "wide_button_n.png",
+			'x': 100,
+			'y': 650 + (i * 50),
+		});
+		button.name = "button " + (i+1);
+		console.log("Button " + button.name + " created");
+		button.on('pointerup',doStuff,this);
+		
+	}
 }
 
 function InitPubNub() {
@@ -196,8 +206,12 @@ function InitPubNub() {
 	});
 
 
-	Date.prototype.toUnixTime = function () { return this.getTime() / 1000 | 0 };
-	Date.time = function () { return new Date().toUnixTime(); }
+	Date.prototype.toUnixTime = function () {
+		return this.getTime() / 1000 | 0
+	};
+	Date.time = function () {
+		return new Date().toUnixTime();
+	}
 	console.log("Date: " + Date.time());
 	// start, end, count are optional
 	// pubnub.fetchMessages(
@@ -236,14 +250,15 @@ function InitPubNub() {
 	})
 }
 
-function doStuff() {
-	console.log("MOIST")
+function onDown (sprite) {
+    text = "onDown: " + sprite.name;
+    sprite.tint = 0x00ff00;
 }
 
 function update(time, delta) {
 	// Apply the controls to the camera each update tick of the game
 	controls.update(delta);
-	var gameObjects = shipGroup.getChildren();  // array of game objects
+	var gameObjects = shipGroup.getChildren(); // array of game objects
 	for (let index = 0; index < gameObjects.length; index++) {
 		tempShip = gameObjects[index];
 
