@@ -16,9 +16,7 @@ const game = new Phaser.Game(config);
 let controls;
 var ships = []
 var shipGroup
-var text = '';
-var group1;
-var group2;
+var buttonGroup
 
 var groupconfig = {
 	classType: Phaser.GameObjects.Sprite,
@@ -63,9 +61,9 @@ function MakeDraggable(theSprite, passedThis, passedCamera) {
 
 	passedThis.input.on('dragend', function (pointer, gameObject) {
 		gameObject.clearTint();
-		console.log("SKKKKA "+theSprite.name)
 	});
 }
+
 
 function BackgroundScroll(theSprite, passedThis) {
 	theSprite.setScale(.5);
@@ -102,15 +100,8 @@ function create() {
 	// Phaser supports multiple cameras, but you can access the default camera like this:
 	const camera = this.cameras.main;
 	shipGroup = this.make.group(groupconfig);
-
     //  Let's create 2 Groups
-    group1 = this.add.group();
-    group2 = this.add.group();
-
-    //  This will automatically inputEnable all children added to both Groups
-    group1.inputEnableChildren = true;
-    group2.inputEnableChildren = true;
-
+    buttonGroup = this.add.group();
 
 	// Set up the arrows to control the camera
 	const cursors = this.input.keyboard.createCursorKeys();
@@ -137,14 +128,12 @@ function create() {
 		var fileName = ship_data.textures[0].frames[index].filename
 		if (fileName.includes("e2")) {
 			var tempShip = this.add.sprite(0, 0, 'ship_textures', fileName).setInteractive();
-			MakeDraggable(tempShip, this, camera);
 			shipGroup.add(tempShip);
 			tempShip.x = rand(1, camera.width);
 			tempShip.y = rand(1, camera.height);
 			tempShip.angle = rand(0, 359);
 			tempShip.setScale(.5);
-			tempShip.name = "Ship "+index
-			// group.add(gameObject, true);  // add this game object to display and update list of scene
+			MakeDraggable(tempShip, this, camera);
 		}
 	}
 
@@ -161,6 +150,10 @@ function create() {
 		})
 		.setScrollFactor(0);
 
+	// Add a window from our UI as a test
+	// var temp_UI = this.add.sprite(100, 100, 'ui_textures','right_screen_texture.png').setInteractive();
+	// MakeDraggable(temp_UI, this, camera);
+
 	for (let i = 0; i < 2; i++) {
 		var button = new BasicButton({
 			'scene': this,
@@ -174,11 +167,27 @@ function create() {
 		});
 		button.name = "button " + (i+1);
 		console.log("Button " + button.name + " created");
+		button.on('pointerup', function () {
+			console.log("Button " + this.name + " pressed");
+		});
 	}
-}
 
-function doStuff (info) {
-    console.log
+	var my_buttons = ["gui_lrotate_64.png","gui_rrotate_64.png","gui_move_64.png","gui_beam_64.png", "gui_missiles_64.png", "gui_beam_64.png"]
+	// console.log("Size of fucking controls "+my_buttons.length)
+	for (let i = 0; i < my_buttons.length; i++) {
+		var button = new BasicButton({
+			'scene': this,
+			'key': 'buttons',
+			'up': my_buttons[i],
+			'x': i*130,
+			'y': 500,
+		});
+		button.name = "button " + (i+1);
+		console.log("Button " + button.name + " created");
+		button.on('pointerup', function () {
+			console.log("Button " + this.name + " pressed");
+		});
+	}
 }
 
 function InitPubNub() {
@@ -257,6 +266,11 @@ function InitPubNub() {
 	this.pubnub.publish(publishPayload, function (status, response) {
 		console.log(status, response);
 	})
+}
+
+function onDown (sprite) {
+    text = "onDown: " + sprite.name;
+    sprite.tint = 0x00ff00;
 }
 
 function update(time, delta) {
