@@ -1,16 +1,16 @@
 {
 	"textures": [
 		{
-			"image": "/ships/allships-0.png",
+			"image": "ships/allships.png",
 			"format": "RGBA8888",
 			"size": {
-				"w": 992,
-				"h": 896
+				"w": 988,
+				"h": 1419
 			},
 			"scale": 1,
 			"frames": [
 				{
-					"filename": "e3 starbase.png",
+					"filename": "e4 starbase.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -73,66 +73,87 @@
 					}
 				},
 				{
-					"filename": "e3 destroyer.png",
+					"filename": "e7 starbase.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
-						"w": 315,
-						"h": 166
+						"w": 512,
+						"h": 512
 					},
 					"spriteSourceSize": {
-						"x": 0,
-						"y": 19,
-						"w": 313,
-						"h": 128
+						"x": 30,
+						"y": 6,
+						"w": 482,
+						"h": 500
+					},
+					"frame": {
+						"x": 505,
+						"y": 1,
+						"w": 482,
+						"h": 500
+					}
+				},
+				{
+					"filename": "e12 starbase.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 512,
+						"h": 512
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 56,
+						"w": 424,
+						"h": 442
 					},
 					"frame": {
 						"x": 1,
 						"y": 505,
-						"w": 313,
-						"h": 128
+						"w": 424,
+						"h": 442
 					}
 				},
 				{
-					"filename": "e2 titan.png",
+					"filename": "e12 frigate.png",
 					"rotated": false,
-					"trimmed": false,
+					"trimmed": true,
 					"sourceSize": {
-						"w": 272,
-						"h": 163
+						"w": 397,
+						"h": 149
 					},
 					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 272,
-						"h": 163
+						"x": 17,
+						"y": 5,
+						"w": 366,
+						"h": 139
 					},
 					"frame": {
 						"x": 1,
-						"y": 635,
-						"w": 272,
-						"h": 163
+						"y": 949,
+						"w": 366,
+						"h": 139
 					}
 				},
 				{
-					"filename": "e2 strike carrier.png",
+					"filename": "e12 destroyer.png",
 					"rotated": false,
-					"trimmed": false,
+					"trimmed": true,
 					"sourceSize": {
-						"w": 183,
-						"h": 95
+						"w": 287,
+						"h": 209
 					},
 					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 183,
-						"h": 95
+						"x": 2,
+						"y": 5,
+						"w": 278,
+						"h": 199
 					},
 					"frame": {
 						"x": 1,
-						"y": 800,
-						"w": 183,
-						"h": 95
+						"y": 1090,
+						"w": 278,
+						"h": 199
 					}
 				},
 				{
@@ -150,94 +171,157 @@
 						"h": 127
 					},
 					"frame": {
-						"x": 316,
-						"y": 505,
+						"x": 1,
+						"y": 1291,
 						"w": 249,
 						"h": 127
 					}
 				},
 				{
-					"filename": "e3 frigate.png",
+					"filename": "e7 titan.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 249,
+						"h": 127
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 249,
+						"h": 127
+					},
+					"frame": {
+						"x": 252,
+						"y": 1291,
+						"w": 249,
+						"h": 127
+					}
+				},
+				{
+					"filename": "e12 battlecruiser.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 282,
+						"h": 138
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 0,
+						"w": 281,
+						"h": 138
+					},
+					"frame": {
+						"x": 505,
+						"y": 503,
+						"w": 281,
+						"h": 138
+					}
+				},
+				{
+					"filename": "e2 titan.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 272,
+						"h": 163
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 272,
+						"h": 163
+					},
+					"frame": {
+						"x": 427,
+						"y": 643,
+						"w": 272,
+						"h": 163
+					}
+				},
+				{
+					"filename": "e12 leviathan.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
 						"w": 238,
-						"h": 125
+						"h": 157
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 226,
+						"h": 157
+					},
+					"frame": {
+						"x": 427,
+						"y": 808,
+						"w": 226,
+						"h": 157
+					}
+				},
+				{
+					"filename": "e12 assault transport.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 248,
+						"h": 147
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 8,
+						"w": 230,
+						"h": 131
+					},
+					"frame": {
+						"x": 369,
+						"y": 967,
+						"w": 230,
+						"h": 131
+					}
+				},
+				{
+					"filename": "asteroid1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 97,
+						"h": 194
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 5,
-						"w": 232,
-						"h": 115
+						"w": 97,
+						"h": 189
 					},
 					"frame": {
-						"x": 567,
-						"y": 503,
-						"w": 232,
-						"h": 115
+						"x": 281,
+						"y": 1100,
+						"w": 97,
+						"h": 189
 					}
 				},
 				{
-					"filename": "e3 heavy cruiser.png",
+					"filename": "e12 dreadnought.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
-						"w": 200,
-						"h": 114
+						"w": 216,
+						"h": 162
 					},
 					"spriteSourceSize": {
-						"x": 15,
-						"y": 3,
-						"w": 183,
-						"h": 108
+						"x": 4,
+						"y": 12,
+						"w": 203,
+						"h": 138
 					},
 					"frame": {
-						"x": 801,
-						"y": 503,
-						"w": 183,
-						"h": 108
-					}
-				},
-				{
-					"filename": "e2 super dreadnought.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 209,
-						"h": 103
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 209,
-						"h": 103
-					},
-					"frame": {
-						"x": 567,
-						"y": 620,
-						"w": 209,
-						"h": 103
-					}
-				},
-				{
-					"filename": "e3 dreadnought.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 238,
-						"h": 125
-					},
-					"spriteSourceSize": {
-						"x": 15,
-						"y": 0,
-						"w": 208,
-						"h": 125
-					},
-					"frame": {
-						"x": 316,
-						"y": 634,
-						"w": 208,
-						"h": 125
+						"x": 380,
+						"y": 1100,
+						"w": 203,
+						"h": 138
 					}
 				},
 				{
@@ -255,8 +339,8 @@
 						"h": 102
 					},
 					"frame": {
-						"x": 801,
-						"y": 613,
+						"x": 788,
+						"y": 503,
 						"w": 190,
 						"h": 102
 					}
@@ -276,31 +360,73 @@
 						"h": 47
 					},
 					"frame": {
-						"x": 275,
-						"y": 761,
+						"x": 380,
+						"y": 1240,
 						"w": 181,
 						"h": 47
 					}
 				},
 				{
-					"filename": "e2 transport.png",
+					"filename": "e7 super dreadnought.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 179,
-						"h": 43
+						"w": 190,
+						"h": 102
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 179,
-						"h": 43
+						"w": 190,
+						"h": 102
 					},
 					"frame": {
-						"x": 526,
-						"y": 725,
-						"w": 179,
-						"h": 43
+						"x": 788,
+						"y": 607,
+						"w": 190,
+						"h": 102
+					}
+				},
+				{
+					"filename": "e2 super dreadnought.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 209,
+						"h": 103
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 209,
+						"h": 103
+					},
+					"frame": {
+						"x": 701,
+						"y": 711,
+						"w": 209,
+						"h": 103
+					}
+				},
+				{
+					"filename": "e12 heavy cruiser.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 183,
+						"h": 137
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 13,
+						"w": 170,
+						"h": 111
+					},
+					"frame": {
+						"x": 655,
+						"y": 816,
+						"w": 170,
+						"h": 111
 					}
 				},
 				{
@@ -318,8 +444,50 @@
 						"h": 83
 					},
 					"frame": {
-						"x": 186,
-						"y": 810,
+						"x": 655,
+						"y": 929,
+						"w": 172,
+						"h": 83
+					}
+				},
+				{
+					"filename": "e2 strike carrier.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 183,
+						"h": 95
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 183,
+						"h": 95
+					},
+					"frame": {
+						"x": 601,
+						"y": 1014,
+						"w": 183,
+						"h": 95
+					}
+				},
+				{
+					"filename": "e7 assault carrier.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 172,
+						"h": 83
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 172,
+						"h": 83
+					},
+					"frame": {
+						"x": 585,
+						"y": 1111,
 						"w": 172,
 						"h": 83
 					}
@@ -339,73 +507,94 @@
 						"h": 77
 					},
 					"frame": {
-						"x": 360,
-						"y": 810,
+						"x": 585,
+						"y": 1196,
 						"w": 174,
 						"h": 77
 					}
 				},
 				{
-					"filename": "e1 dreadnought.png",
+					"filename": "e7 transport.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 164,
-						"h": 76
+						"w": 181,
+						"h": 47
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 164,
-						"h": 76
+						"w": 181,
+						"h": 47
 					},
 					"frame": {
-						"x": 536,
-						"y": 770,
-						"w": 164,
-						"h": 76
+						"x": 563,
+						"y": 1275,
+						"w": 181,
+						"h": 47
 					}
 				},
 				{
-					"filename": "e1 scout.png",
+					"filename": "e7 strike carrier.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 89,
-						"h": 45
+						"w": 174,
+						"h": 77
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 89,
-						"h": 45
+						"w": 174,
+						"h": 77
 					},
 					"frame": {
-						"x": 536,
-						"y": 848,
-						"w": 89,
-						"h": 45
+						"x": 503,
+						"y": 1324,
+						"w": 174,
+						"h": 77
 					}
 				},
 				{
-					"filename": "e2 dreadnought.png",
+					"filename": "e1 heavy cruiser.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 82,
-						"h": 42
+						"w": 128,
+						"h": 71
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 82,
-						"h": 42
+						"w": 128,
+						"h": 71
 					},
 					"frame": {
-						"x": 627,
-						"y": 848,
-						"w": 82,
-						"h": 42
+						"x": 827,
+						"y": 816,
+						"w": 128,
+						"h": 71
+					}
+				},
+				{
+					"filename": "e7 heavy cruiser.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 128,
+						"h": 71
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 128,
+						"h": 71
+					},
+					"frame": {
+						"x": 829,
+						"y": 889,
+						"w": 128,
+						"h": 71
 					}
 				},
 				{
@@ -423,8 +612,92 @@
 						"h": 51
 					},
 					"frame": {
-						"x": 778,
-						"y": 717,
+						"x": 829,
+						"y": 962,
+						"w": 132,
+						"h": 51
+					}
+				},
+				{
+					"filename": "e1 dreadnought.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 164,
+						"h": 76
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 164,
+						"h": 76
+					},
+					"frame": {
+						"x": 786,
+						"y": 1015,
+						"w": 164,
+						"h": 76
+					}
+				},
+				{
+					"filename": "e2 transport.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 179,
+						"h": 43
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 179,
+						"h": 43
+					},
+					"frame": {
+						"x": 786,
+						"y": 1093,
+						"w": 179,
+						"h": 43
+					}
+				},
+				{
+					"filename": "e7 dreadnought.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 164,
+						"h": 76
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 164,
+						"h": 76
+					},
+					"frame": {
+						"x": 761,
+						"y": 1138,
+						"w": 164,
+						"h": 76
+					}
+				},
+				{
+					"filename": "e7 light carrier.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 132,
+						"h": 51
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 132,
+						"h": 51
+					},
+					"frame": {
+						"x": 761,
+						"y": 1216,
 						"w": 132,
 						"h": 51
 					}
@@ -444,31 +717,10 @@
 						"h": 51
 					},
 					"frame": {
-						"x": 912,
-						"y": 717,
+						"x": 701,
+						"y": 643,
 						"w": 77,
 						"h": 51
-					}
-				},
-				{
-					"filename": "e1 heavy cruiser.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 128,
-						"h": 71
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 128,
-						"h": 71
-					},
-					"frame": {
-						"x": 702,
-						"y": 770,
-						"w": 128,
-						"h": 71
 					}
 				},
 				{
@@ -486,52 +738,10 @@
 						"h": 60
 					},
 					"frame": {
-						"x": 832,
-						"y": 770,
+						"x": 679,
+						"y": 1324,
 						"w": 91,
 						"h": 60
-					}
-				},
-				{
-					"filename": "e2 assault carrier.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 80,
-						"h": 37
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 80,
-						"h": 37
-					},
-					"frame": {
-						"x": 711,
-						"y": 843,
-						"w": 80,
-						"h": 37
-					}
-				},
-				{
-					"filename": "e1 fighters.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 47,
-						"h": 78
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 47,
-						"h": 77
-					},
-					"frame": {
-						"x": 925,
-						"y": 770,
-						"w": 47,
-						"h": 77
 					}
 				},
 				{
@@ -549,10 +759,52 @@
 						"h": 32
 					},
 					"frame": {
-						"x": 458,
-						"y": 761,
+						"x": 679,
+						"y": 1386,
 						"w": 61,
 						"h": 32
+					}
+				},
+				{
+					"filename": "e1 fighters.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 47,
+						"h": 78
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 47,
+						"h": 77
+					},
+					"frame": {
+						"x": 427,
+						"y": 505,
+						"w": 47,
+						"h": 77
+					}
+				},
+				{
+					"filename": "e7 fighters.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 47,
+						"h": 78
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 46,
+						"h": 78
+					},
+					"frame": {
+						"x": 912,
+						"y": 711,
+						"w": 46,
+						"h": 78
 					}
 				},
 				{
@@ -570,31 +822,73 @@
 						"h": 28
 					},
 					"frame": {
-						"x": 707,
-						"y": 725,
+						"x": 503,
+						"y": 1289,
 						"w": 58,
 						"h": 28
 					}
 				},
 				{
-					"filename": "e2 destroyer.png",
+					"filename": "e7 destroyer.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 44,
-						"h": 27
+						"w": 91,
+						"h": 60
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 44,
-						"h": 27
+						"w": 91,
+						"h": 60
 					},
 					"frame": {
-						"x": 793,
-						"y": 843,
-						"w": 44,
-						"h": 27
+						"x": 772,
+						"y": 1269,
+						"w": 91,
+						"h": 60
+					}
+				},
+				{
+					"filename": "e1 scout.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 89,
+						"h": 45
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 89,
+						"h": 45
+					},
+					"frame": {
+						"x": 772,
+						"y": 1331,
+						"w": 89,
+						"h": 45
+					}
+				},
+				{
+					"filename": "e2 assault carrier.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 80,
+						"h": 37
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 80,
+						"h": 37
+					},
+					"frame": {
+						"x": 772,
+						"y": 1378,
+						"w": 80,
+						"h": 37
 					}
 				},
 				{
@@ -612,9 +906,72 @@
 						"h": 27
 					},
 					"frame": {
-						"x": 275,
-						"y": 635,
+						"x": 476,
+						"y": 505,
 						"w": 27,
+						"h": 27
+					}
+				},
+				{
+					"filename": "e7 scout.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 89,
+						"h": 45
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 89,
+						"h": 45
+					},
+					"frame": {
+						"x": 895,
+						"y": 1216,
+						"w": 89,
+						"h": 45
+					}
+				},
+				{
+					"filename": "e2 dreadnought.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 82,
+						"h": 42
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 82,
+						"h": 42
+					},
+					"frame": {
+						"x": 895,
+						"y": 1263,
+						"w": 82,
+						"h": 42
+					}
+				},
+				{
+					"filename": "e2 destroyer.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 44,
+						"h": 27
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 44,
+						"h": 27
+					},
+					"frame": {
+						"x": 601,
+						"y": 967,
+						"w": 44,
 						"h": 27
 					}
 				}
@@ -624,6 +981,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:cd7c044eb8c10c4d90b62a3dd634fd1f:b392a741ed3157978d1a339bfae919ee:31e3f840912b576c8b9fa59089646e39$"
+		"smartupdate": "$TexturePacker:SmartUpdate:313739fb0b8f40562f56fa8d27a5403f:7ef6d845c247d94dde01a5de09e33ee1:27b0b6da8d70179792dbf92ea9370e5a$"
 	}
 }

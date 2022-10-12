@@ -36,7 +36,7 @@ function preload() {
 	this.load.json('ship_sheetdata', '/ships/allships.json');
 	this.load.multiatlas('ui_textures', '/ui/ui.json');
 	this.load.json('ui_sheetdata', '/ui/ui.json');
-	this.load.image("background", "/backgrounds/background2.jpg");
+	this.load.image("background", "/backgrounds/starfield1.png");
 }
 
 function MakeDraggable(theSprite, passedThis, passedCamera) {
@@ -113,9 +113,11 @@ function create() {
 		down: cursors.down,
 		speed: 0.5
 	});
-
-	var background = this.add.tileSprite(0, 0, camera.width, camera.height, 'background').setInteractive();
-	BackgroundScroll(background, this);
+	console.log("camera.height = " + camera.height);
+	// var background = this.add.tileSprite(0, 0, camera.width*2, camera.height*2, 'background').setInteractive();
+	var background = this.add.sprite(640, 360, 'background');
+	background.setScale(2.5)
+	// BackgroundScroll(background, this);
 	var ships = ["e2 titan.png", "e3 destroyer.png"];
 	console.log("The stuff " + ship_data.textures[0].frames[0].filename);
 
@@ -159,11 +161,11 @@ function create() {
 			'scene': this,
 			'sheet_data': "ui_textures",
 			'key': 'buttons',
-			'down': "wide_button_h.png",
-			'up': "wide_button_p.png",
-			'over': "wide_button_n.png",
-			'x': 100,
-			'y': 650 + (i * 50),
+			'down': "buttonOver.png",
+			'up': "buttonOver2.png",
+			'over': "buttonOver2.png",
+			'x': 135,
+			'y': 580 + (i * 50),
 		});
 		button.name = "button " + (i+1);
 		console.log("Button " + button.name + " created");
@@ -177,10 +179,13 @@ function create() {
 	for (let i = 0; i < my_buttons.length; i++) {
 		var button = new BasicButton({
 			'scene': this,
+			'sheet_data': "ui_textures",
 			'key': 'buttons',
+			'down': my_buttons[i],
 			'up': my_buttons[i],
-			'x': i*130,
-			'y': 500,
+			'over': my_buttons[i],
+			'x': (i*70)+32,
+			'y': 685,
 		});
 		button.name = "button " + (i+1);
 		console.log("Button " + button.name + " created");
