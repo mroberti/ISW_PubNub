@@ -23,7 +23,6 @@ var content = 'Phaser is a fast, free, and fun open source HTML5 game framework 
 
 const game = new Phaser.Game(config);
 let controls;
-var ships = []
 var shipGroup
 var buttonGroup
 
@@ -74,6 +73,7 @@ function MakeDraggable(theSprite, passedThis, passedCamera) {
 
 	passedThis.input.on('dragend', function (pointer, gameObject) {
 		gameObject.clearTint();
+		console.log("Sprite name: " + gameObject.name);
 	});
 }
 
@@ -147,8 +147,9 @@ function create() {
 			shipGroup.add(tempShip);
 			tempShip.x = rand(1, camera.width);
 			tempShip.y = rand(1, camera.height);
-			tempShip.angle = rand(0, 359);
+			tempShip.angle = rand(0, 11) * 30;
 			tempShip.setScale(.5);
+			tempShip.name = "USS Smack U"
 			MakeDraggable(tempShip, this, camera);
 			this.print.text += count + '\n';
 	}
@@ -284,11 +285,12 @@ function create() {
 	// 	.on('button.out', function (button, groupName, index) {
 	// 		button.getElement('background').setStrokeStyle();
 	// 	});
-	
-	createTextBox(this, 100, 100, {
-		wrapWidth: 500,
-	})
-	.start(content, 20);
+
+	// Typewriter dialog box
+	// createTextBox(this, 100, 100, {
+	// 	wrapWidth: 500,
+	// })
+	// .start(content, 20);
 
 
 }
@@ -420,7 +422,10 @@ function InitPubNub() {
 	this.pubnub.addListener({
 		message: function (m) {
 			// handle messages
-			console.log(m.message.description)
+			if(m.message.type=="game_turn_v1"){
+				console.log("Process game turn!!!!!")
+			}
+			console.log(m.message.type=="game_turn_v1")
 		},
 		presence: function (p) {
 			// handle presence  
@@ -462,16 +467,6 @@ function InitPubNub() {
 	// 	}
 	// );
 
-	var publishPayload = {
-		channel: "my_channel",
-		message: {
-			type: "game_turn_v1",
-			title: "greeting",
-			description: "This is my first message!",
-			ship1: {x: 1, y: 2, rotation: 180}
-		}
-	}
-
 	var gameBoard = {
 		"name": "Kobayashi Maru",
 		"subject vessels": ["FR DD Reliant", "FR DD Reliant"
@@ -483,6 +478,16 @@ function InitPubNub() {
 	this.pubnub.subscribe({
 		channels: ["my_channel"]
 	});
+
+	var publishPayload = {
+		channel: "my_channel",
+		message: {
+			type: "game_turn_v1",
+			title: "greeting",
+			description: "This is my first message!",
+			ship1: {x: 1, y: 2, rotation: 180}
+		}
+	}
 
 	this.pubnub.publish(publishPayload, function (status, response) {
 		console.log(status, response);
@@ -517,12 +522,38 @@ function MoveForward(ship){
 	// controls.update(delta);
 	var tempShip = shipGroup.getChildren()[0]; // array of game objects
 
-	var speed_angle = tempShip.angle;
 	var speed_length = 30.25;
-	var tempSpeed = Phaser.Math
-
-	var speed_x = speed_length * Math.cos(Phaser.Math.DegToRad(speed_angle));
-	var speed_y = speed_length * Math.sin(Phaser.Math.DegToRad(speed_angle));
+	var speed_x = speed_length * Math.cos(Phaser.Math.DegToRad(tempShip.angle));
+	var speed_y = speed_length * Math.sin(Phaser.Math.DegToRad(tempShip.angle));
 	tempShip.x = tempShip.x + speed_x;
 	tempShip.y = tempShip.y + speed_y;
+	var publishPayload = {
+		channel: "my_channel",
+		message: {
+			type: "game_turn_v1",
+			title: "greeting",
+			description: "This is my first message!",
+			ship1: {x: 1, y: 2, rotation: 180}
+		}
+	}
+	
+	this.pubnub.publish(publishPayload, function (status, response) {
+		console.log(status, response);
+	})
+}
+
+function TurnLeft(ship){
+	// Apply the controls to the camera each update tick of the game
+	// controls.update(delta);
+	var tempShip = shipGroup.getChildren()[0]; // array of game objects
+
+	tempShip.angle = (tempShip.angle-=30)%360;
+}
+
+function TurnRight(ship){
+	// Apply the controls to the camera each update tick of the game
+	// controls.update(delta);
+	var tempShip = shipGroup.getChildren()[0]; // array of game objects
+
+	tempShip.angle = (tempShip.angle+=30)%360;
 }
