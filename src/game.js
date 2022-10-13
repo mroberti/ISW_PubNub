@@ -147,7 +147,7 @@ function create() {
 			shipGroup.add(tempShip);
 			tempShip.x = rand(1, camera.width);
 			tempShip.y = rand(1, camera.height);
-			tempShip.angle = rand(0, 11) * 30;
+			tempShip.angle = parseInt(rand(0, 11) * 30);
 			tempShip.setScale(.5);
 			tempShip.name = "USS Smack U"
 			MakeDraggable(tempShip, this, camera);
@@ -173,8 +173,8 @@ function create() {
 		console.log("Button " + button.name + " created");
 		button.on('pointerup', function () {
 			console.log("Button " + this.name + " pressed");
-			currentPlayer = players[parseInt(this.name)]
-			console.log("currentPlayer = " + currentPlayer);
+			currentPlayer = parseInt(this.name)
+			console.log("currentPlayer = " + players[parseInt(this.name)]);
 		});
 	}
 
@@ -211,13 +211,13 @@ function create() {
 			console.log("Button " + this.name + " pressed");
 			switch (this.name) {
 				case "turn left":
-					TurnLeft(shipGroup[0])
+					TurnLeft()
 					break;
 				case "move forward":
-					MoveForward(shipGroup[1])
+					MoveForward()
 					break;
 				case "turn right":
-					TurnRight(shipGroup[0])
+					TurnRight()
 					break;
 			}
 		});
@@ -424,8 +424,8 @@ function InitPubNub() {
 			// handle messages
 			if(m.message.type=="game_turn_v1"){
 				console.log("Process game turn!!!!!")
+				console.log(m.message)
 			}
-			console.log(m.message.type=="game_turn_v1")
 		},
 		presence: function (p) {
 			// handle presence  
@@ -482,10 +482,8 @@ function InitPubNub() {
 	var publishPayload = {
 		channel: "my_channel",
 		message: {
-			type: "game_turn_v1",
-			title: "greeting",
-			description: "This is my first message!",
-			ship1: {x: 1, y: 2, rotation: 180}
+			type: "Connection",
+			title: "Greetingss bitchezzzz",
 		}
 	}
 
@@ -517,11 +515,8 @@ function update(time, delta) {
 	// }
 }
 
-function MoveForward(ship){
-	// Apply the controls to the camera each update tick of the game
-	// controls.update(delta);
-	var tempShip = shipGroup.getChildren()[0]; // array of game objects
-
+function MoveForward(){
+	var tempShip = shipGroup.getChildren()[currentPlayer]; // array of game objects
 	var speed_length = 30.25;
 	var speed_x = speed_length * Math.cos(Phaser.Math.DegToRad(tempShip.angle));
 	var speed_y = speed_length * Math.sin(Phaser.Math.DegToRad(tempShip.angle));
@@ -531,9 +526,12 @@ function MoveForward(ship){
 		channel: "my_channel",
 		message: {
 			type: "game_turn_v1",
-			title: "greeting",
-			description: "This is my first message!",
-			ship1: {x: 1, y: 2, rotation: 180}
+			player: currentPlayer,
+			description: "Momvement registered!",
+			ship: {"x":tempShip.x,
+			"y":tempShip.y,
+			"rotation":parseInt(Phaser.Math.RoundTo(Phaser.Math.RadToDeg(tempShip.rotation))%360)
+			}
 		}
 	}
 	
@@ -542,18 +540,12 @@ function MoveForward(ship){
 	})
 }
 
-function TurnLeft(ship){
-	// Apply the controls to the camera each update tick of the game
-	// controls.update(delta);
-	var tempShip = shipGroup.getChildren()[0]; // array of game objects
-
+function TurnLeft(){
+	var tempShip = shipGroup.getChildren()[currentPlayer]; // array of game objects
 	tempShip.angle = (tempShip.angle-=30)%360;
 }
 
-function TurnRight(ship){
-	// Apply the controls to the camera each update tick of the game
-	// controls.update(delta);
-	var tempShip = shipGroup.getChildren()[0]; // array of game objects
-
+function TurnRight(){
+	var tempShip = shipGroup.getChildren()[currentPlayer]; // array of game objects
 	tempShip.angle = (tempShip.angle+=30)%360;
 }
