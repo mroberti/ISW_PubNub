@@ -424,7 +424,7 @@ function InitPubNub() {
 			// handle messages
 			if(m.message.type=="game_turn_v1"){
 				console.log("Process game turn!!!!!")
-				console.log(m.message)
+				ProcessReceivedTurn(m)
 			}
 		},
 		presence: function (p) {
@@ -517,11 +517,6 @@ function update(time, delta) {
 
 function MoveForward(){
 	var tempShip = shipGroup.getChildren()[currentPlayer]; // array of game objects
-	var speed_length = 30.25;
-	var speed_x = speed_length * Math.cos(Phaser.Math.DegToRad(tempShip.angle));
-	var speed_y = speed_length * Math.sin(Phaser.Math.DegToRad(tempShip.angle));
-	tempShip.x = tempShip.x + speed_x;
-	tempShip.y = tempShip.y + speed_y;
 	var publishPayload = {
 		channel: "my_channel",
 		message: {
@@ -534,7 +529,6 @@ function MoveForward(){
 			}
 		}
 	}
-	
 	this.pubnub.publish(publishPayload, function (status, response) {
 		console.log(status, response);
 	})
@@ -548,4 +542,19 @@ function TurnLeft(){
 function TurnRight(){
 	var tempShip = shipGroup.getChildren()[currentPlayer]; // array of game objects
 	tempShip.angle = (tempShip.angle+=30)%360;
+}
+
+function ProcessReceivedTurn(m){
+	console.log(m.message)
+	// var tempShip = shipGroup.getChildren()[currentPlayer]; // array of game objects
+	// // Move Forward
+	// var tempShip = shipGroup.getChildren()[currentPlayer]; // array of game objects
+	// var speed_length = 30.25;
+	// var speed_x = speed_length * Math.cos(Phaser.Math.DegToRad(tempShip.angle));
+	// var speed_y = speed_length * Math.sin(Phaser.Math.DegToRad(tempShip.angle));
+	// tempShip.x = tempShip.x + speed_x;
+	// tempShip.y = tempShip.y + speed_y;	
+	// this.pubnub.publish(publishPayload, function (status, response) {
+	// 	console.log(status, response);
+	// })
 }
