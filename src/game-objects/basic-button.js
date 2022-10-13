@@ -53,13 +53,16 @@ class BasicButton extends Phaser.GameObjects.Sprite {
     onDown()
     {
         this.setTexture('ui_textures',this.config.down)
+        this.setScale(0.9);
     }
     onOver()
     {
     	this.setTexture('ui_textures',this.config.over)
+        this.setScale(1.1);
     }
     onUp()
     {
     	this.setTexture('ui_textures',this.config.up)
+        this.setScale(1.0);
     }
 }

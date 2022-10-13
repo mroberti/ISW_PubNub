@@ -12,6 +12,15 @@ const config = {
 	}
 };
 
+const COLOR_PRIMARY = 0x4e342e;
+const COLOR_LIGHT = 0x7b5e57;
+const COLOR_DARK = 0x260e04;
+var players = ["Jeremy","Mario"]
+
+var currentPlayer = null;
+
+var content = 'Phaser is a fast, free, and fun open source HTML5 game framework that offers WebGL and Canvas rendering across desktop and mobile web browsers. Games can be compiled to iOS, Android and native apps by using 3rd party tools. You can use JavaScript or TypeScript for development.';
+
 const game = new Phaser.Game(config);
 let controls;
 var ships = []
@@ -37,6 +46,10 @@ function preload() {
 	this.load.multiatlas('ui_textures', '/ui/ui.json');
 	this.load.json('ui_sheetdata', '/ui/ui.json');
 	this.load.image("background", "/backgrounds/starfield1.png");
+	// The rexui plugin is required for the text box and other UI elements
+	this.load.scenePlugin({key: 'rexuiplugin', url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', sceneKey: 'rexUI'});
+	this.load.image('user', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/person.png');
+	this.load.image('password', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/key.png');
 }
 
 function MakeDraggable(theSprite, passedThis, passedCamera) {
@@ -63,7 +76,6 @@ function MakeDraggable(theSprite, passedThis, passedCamera) {
 		gameObject.clearTint();
 	});
 }
-
 
 function BackgroundScroll(theSprite, passedThis) {
 	theSprite.setScale(.5);
@@ -118,7 +130,7 @@ function create() {
 	var background = this.add.sprite(640, 360, 'background');
 	background.setScale(2.5)
 	// BackgroundScroll(background, this);
-	var ships = ["e2 titan.png", "e3 destroyer.png"];
+	var ships = ["e2 titan.png", "e1 titan.png"];
 	console.log("The stuff " + ship_data.textures[0].frames[0].filename);
 
 	// // Check for substring
@@ -126,31 +138,20 @@ function create() {
 	// substring = "oo";
 	// console.log(string.includes(substring));
 
-	for (let index = 0; index < ship_data.textures[0].frames.length; index++) {
-		var fileName = ship_data.textures[0].frames[index].filename
-		if (fileName.includes("e2")) {
-			var tempShip = this.add.sprite(0, 0, 'ship_textures', fileName).setInteractive();
+	this.print = this.add.text(0, 0, 'Use Arrow keys to scroll camera');
+
+	var count = 0
+	for (let i = 0; i < ships.length; i++) {
+		var fileName = ship_data.textures[0].frames[i].filename
+			var tempShip = this.add.sprite(0, 0, 'ship_textures', ships[i]).setInteractive();
 			shipGroup.add(tempShip);
 			tempShip.x = rand(1, camera.width);
 			tempShip.y = rand(1, camera.height);
 			tempShip.angle = rand(0, 359);
 			tempShip.setScale(.5);
 			MakeDraggable(tempShip, this, camera);
-		}
+			this.print.text += count + '\n';
 	}
-
-	// Help text that has a "fixed" position on the screen
-	this.add
-		.text(16, 16, "Arrow keys to scroll", {
-			font: "18px monospace",
-			fill: "#ffffff",
-			padding: {
-				x: 20,
-				y: 10
-			},
-			backgroundColor: "#00000000"
-		})
-		.setScrollFactor(0);
 
 	// Add a window from our UI as a test
 	// var temp_UI = this.add.sprite(100, 100, 'ui_textures','right_screen_texture.png').setInteractive();
@@ -167,14 +168,16 @@ function create() {
 			'x': 135,
 			'y': 580 + (i * 50),
 		});
-		button.name = "button " + (i+1);
+		button.name = (i);
 		console.log("Button " + button.name + " created");
 		button.on('pointerup', function () {
 			console.log("Button " + this.name + " pressed");
+			currentPlayer = players[parseInt(this.name)]
+			console.log("currentPlayer = " + currentPlayer);
 		});
 	}
 
-	var my_buttons = ["gui_lrotate_64.png","gui_rrotate_64.png","gui_move_64.png","gui_beam_64.png", "gui_missiles_64.png", "gui_beam_64.png"]
+	var my_buttons = ["gui_lrotate_64.png","gui_move_64.png","gui_rrotate_64.png","gui_beam_64.png", "gui_missiles_64.png", "gui_beam_64.png"]
 	// console.log("Size of fucking controls "+my_buttons.length)
 	for (let i = 0; i < my_buttons.length; i++) {
 		var button = new BasicButton({
@@ -187,12 +190,223 @@ function create() {
 			'x': (i*70)+32,
 			'y': 685,
 		});
-		button.name = "button " + (i+1);
-		console.log("Button " + button.name + " created");
-		button.on('pointerup', function () {
+		console.log("i = " + i);
+		switch (i) {
+			case 0:
+				button.name = "turn left";
+				break;
+			case 1:
+				button.name = "move forward";
+				break;
+			case 2:
+				button.name = "turn right";
+				break;
+			default:
+				button.name = "button " + (i+1);
+				break;
+		  }
+		  console.log("Button " + button.name + " created");
+		  button.on('pointerup', function () {
 			console.log("Button " + this.name + " pressed");
+			switch (this.name) {
+				case "turn left":
+					TurnLeft(shipGroup[0])
+					break;
+				case "move forward":
+					MoveForward(shipGroup[1])
+					break;
+				case "turn right":
+					TurnRight(shipGroup[0])
+					break;
+			}
 		});
 	}
+
+	// var dialog = this.rexUI.add.dialog({
+	// 	x: 400,
+	// 	y: 300,
+
+	// 	background: this.rexUI.add.roundRectangle(0, 0, 100, 100, 20, 0x1565c0),
+
+	// 	title: this.rexUI.add.label({
+	// 		background: this.rexUI.add.roundRectangle(0, 0, 100, 40, 20, 0x003c8f),
+	// 		text: this.add.text(0, 0, 'Title', {
+	// 			fontSize: '24px'
+	// 		}),
+	// 		space: {
+	// 			left: 15,
+	// 			right: 15,
+	// 			top: 10,
+	// 			bottom: 10
+	// 		}
+	// 	}),
+
+	// 	content: this.add.text(0, 0, 'Do you want to build a snow man?', {
+	// 		fontSize: '12px'
+	// 	}),
+
+	// 	actions: [
+	// 		createLabel(this, 'Yes'),
+	// 		createLabel(this, 'No')
+	// 	],
+
+	// 	space: {
+	// 		title: 25,
+	// 		content: 25,
+	// 		action: 15,
+
+	// 		left: 20,
+	// 		right: 20,
+	// 		top: 20,
+	// 		bottom: 20,
+	// 	},
+
+	// 	align: {
+	// 		actions: 'right', // 'center'|'left'|'right'
+	// 	},
+
+	// 	expand: {
+	// 		content: false, // Content is a pure text object
+	// 	}
+	// })
+	// 	.layout()
+	// 	// .drawBounds(this.add.graphics(), 0xff0000)
+	// 	.popUp(1000);
+
+
+	// dialog
+	// 	.on('button.click', function (button, groupName, index) {
+	// 		this.print.text += index + ': ' + button.text + '\n';
+	// 	}, this)
+	// 	.on('button.over', function (button, groupName, index) {
+	// 		button.getElement('background').setStrokeStyle(1, 0xffffff);
+	// 	})
+	// 	.on('button.out', function (button, groupName, index) {
+	// 		button.getElement('background').setStrokeStyle();
+	// 	});
+	
+	createTextBox(this, 100, 100, {
+		wrapWidth: 500,
+	})
+	.start(content, 20);
+
+
+}
+
+const GetValue = Phaser.Utils.Objects.GetValue;
+var createTextBox = function (scene, x, y, config) {
+    var wrapWidth = GetValue(config, 'wrapWidth', 0);
+    var fixedWidth = GetValue(config, 'fixedWidth', 0);
+    var fixedHeight = GetValue(config, 'fixedHeight', 0);
+    var textBox = scene.rexUI.add.textBox({
+            x: x,
+            y: y,
+
+            background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 20, COLOR_PRIMARY)
+                .setStrokeStyle(2, COLOR_LIGHT),
+
+            icon: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 20, COLOR_DARK),
+
+            // text: getBuiltInText(scene, wrapWidth, fixedWidth, fixedHeight),
+            text: getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight),
+
+            action: scene.add.image(0, 0, 'nextPage').setTint(COLOR_LIGHT).setVisible(false),
+
+            space: {
+                left: 20,
+                right: 20,
+                top: 20,
+                bottom: 20,
+                icon: 10,
+                text: 10,
+            }
+        })
+        .setOrigin(0)
+        .layout();
+
+    textBox
+        .setInteractive()
+        .on('pointerdown', function () {
+            var icon = this.getElement('action').setVisible(false);
+            this.resetChildVisibleState(icon);
+            if (this.isTyping) {
+                this.stop(true);
+            } else {
+                this.typeNextPage();
+            }
+        }, textBox)
+        .on('pageend', function () {
+            if (this.isLastPage) {
+                return;
+            }
+
+            var icon = this.getElement('action').setVisible(true);
+            this.resetChildVisibleState(icon);
+            icon.y -= 30;
+            var tween = scene.tweens.add({
+                targets: icon,
+                y: '+=30', // '+=100'
+                ease: 'Bounce', // 'Cubic', 'Elastic', 'Bounce', 'Back'
+                duration: 500,
+                repeat: 0, // -1: infinity
+                yoyo: false
+            });
+        }, textBox)
+    //.on('type', function () {
+    //})
+
+    return textBox;
+}
+
+var getBuiltInText = function (scene, wrapWidth, fixedWidth, fixedHeight) {
+    return scene.add.text(0, 0, '', {
+            fontSize: '12px',
+            wordWrap: {
+                width: wrapWidth
+            },
+            maxLines: 3
+        })
+        .setFixedSize(fixedWidth, fixedHeight);
+}
+
+var getBBcodeText = function (scene, wrapWidth, fixedWidth, fixedHeight) {
+    return scene.rexUI.add.BBCodeText(0, 0, '', {
+        fixedWidth: fixedWidth,
+        fixedHeight: fixedHeight,
+
+		style: {
+			font: '8px Courier', fill: '#00ff00',
+			wrap: {
+				mode: 0,     // 0|'none'|1|'word'|2|'char'|'character'
+				width: 0
+			}
+		},
+        wrap: {
+            mode: 'word',
+            width: wrapWidth
+        },
+        maxLines: 3
+    })
+}
+
+var createLabel = function (scene, text) {
+    return scene.rexUI.add.label({
+        // width: 40,
+        // height: 40,
+
+        background: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 20, 0x5e92f3),
+
+        text: scene.add.text(0, 0, text, {
+            fontSize: '24px'
+        }),
+
+        space: {
+            left: 10,
+            right: 10,
+            top: 10,
+            bottom: 10
+        }
+    });
 }
 
 function InitPubNub() {
@@ -251,8 +465,10 @@ function InitPubNub() {
 	var publishPayload = {
 		channel: "my_channel",
 		message: {
+			type: "game_turn_v1",
 			title: "greeting",
-			description: "This is my first message!"
+			description: "This is my first message!",
+			ship1: {x: 1, y: 2, rotation: 180}
 		}
 	}
 
@@ -279,21 +495,34 @@ function onDown (sprite) {
 }
 
 function update(time, delta) {
+	// // Apply the controls to the camera each update tick of the game
+	// controls.update(delta);
+	// var gameObjects = shipGroup.getChildren(); // array of game objects
+	// for (let index = 0; index < gameObjects.length; index++) {
+	// 	tempShip = gameObjects[index];
+
+	// 	var speed_angle = tempShip.angle;
+	// 	var speed_length = 0.25;
+	// 	var tempSpeed = Phaser.Math
+
+	// 	var speed_x = speed_length * Math.cos(Phaser.Math.DegToRad(speed_angle));
+	// 	var speed_y = speed_length * Math.sin(Phaser.Math.DegToRad(speed_angle));
+	// 	tempShip.x = tempShip.x + speed_x;
+	// 	tempShip.y = tempShip.y + speed_y;
+	// }
+}
+
+function MoveForward(ship){
 	// Apply the controls to the camera each update tick of the game
-	controls.update(delta);
-	var gameObjects = shipGroup.getChildren(); // array of game objects
-	for (let index = 0; index < gameObjects.length; index++) {
-		tempShip = gameObjects[index];
+	// controls.update(delta);
+	var tempShip = shipGroup.getChildren()[0]; // array of game objects
 
-		var speed_angle = tempShip.angle;
-		var speed_length = 0.25;
-		var tempSpeed = Phaser.Math
+	var speed_angle = tempShip.angle;
+	var speed_length = 30.25;
+	var tempSpeed = Phaser.Math
 
-		var speed_x = speed_length * Math.cos(Phaser.Math.DegToRad(speed_angle));
-		var speed_y = speed_length * Math.sin(Phaser.Math.DegToRad(speed_angle));
-		tempShip.x = tempShip.x + speed_x;
-		tempShip.y = tempShip.y + speed_y;
-
-
-	}
+	var speed_x = speed_length * Math.cos(Phaser.Math.DegToRad(speed_angle));
+	var speed_y = speed_length * Math.sin(Phaser.Math.DegToRad(speed_angle));
+	tempShip.x = tempShip.x + speed_x;
+	tempShip.y = tempShip.y + speed_y;
 }
