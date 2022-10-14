@@ -15,7 +15,7 @@ const config = {
 const COLOR_PRIMARY = 0x4e342e;
 const COLOR_LIGHT = 0x7b5e57;
 const COLOR_DARK = 0x260e04;
-var players = ["Jeremy","Mario"]
+var players = ["Jeremy","Mario","what"]
 
 var currentPlayer = null;
 
@@ -154,11 +154,8 @@ function create() {
 			this.print.text += count + '\n';
 	}
 
-	// Add a window from our UI as a test
-	// var temp_UI = this.add.sprite(100, 100, 'ui_textures','right_screen_texture.png').setInteractive();
-	// MakeDraggable(temp_UI, this, camera);
-
-	for (let i = 0; i < 2; i++) {
+	// Make buttons
+	for (let i = 0; i < 3; i++) {
 		var button = new BasicButton({
 			'scene': this,
 			'sheet_data': "ui_textures",
@@ -167,7 +164,7 @@ function create() {
 			'up': "buttonOver2.png",
 			'over': "buttonOver2.png",
 			'x': 135,
-			'y': 580 + (i * 50),
+			'y': 500 + (i * 50),
 		});
 		button.name = (i);
 		console.log("Button " + button.name + " created");
@@ -223,195 +220,13 @@ function create() {
 		});
 	}
 
-	// var dialog = this.rexUI.add.dialog({
-	// 	x: 400,
-	// 	y: 300,
-
-	// 	background: this.rexUI.add.roundRectangle(0, 0, 100, 100, 20, 0x1565c0),
-
-	// 	title: this.rexUI.add.label({
-	// 		background: this.rexUI.add.roundRectangle(0, 0, 100, 40, 20, 0x003c8f),
-	// 		text: this.add.text(0, 0, 'Title', {
-	// 			fontSize: '24px'
-	// 		}),
-	// 		space: {
-	// 			left: 15,
-	// 			right: 15,
-	// 			top: 10,
-	// 			bottom: 10
-	// 		}
-	// 	}),
-
-	// 	content: this.add.text(0, 0, 'Do you want to build a snow man?', {
-	// 		fontSize: '12px'
-	// 	}),
-
-	// 	actions: [
-	// 		createLabel(this, 'Yes'),
-	// 		createLabel(this, 'No')
-	// 	],
-
-	// 	space: {
-	// 		title: 25,
-	// 		content: 25,
-	// 		action: 15,
-
-	// 		left: 20,
-	// 		right: 20,
-	// 		top: 20,
-	// 		bottom: 20,
-	// 	},
-
-	// 	align: {
-	// 		actions: 'right', // 'center'|'left'|'right'
-	// 	},
-
-	// 	expand: {
-	// 		content: false, // Content is a pure text object
-	// 	}
-	// })
-	// 	.layout()
-	// 	// .drawBounds(this.add.graphics(), 0xff0000)
-	// 	.popUp(1000);
-
-
-	// dialog
-	// 	.on('button.click', function (button, groupName, index) {
-	// 		this.print.text += index + ': ' + button.text + '\n';
-	// 	}, this)
-	// 	.on('button.over', function (button, groupName, index) {
-	// 		button.getElement('background').setStrokeStyle(1, 0xffffff);
-	// 	})
-	// 	.on('button.out', function (button, groupName, index) {
-	// 		button.getElement('background').setStrokeStyle();
-	// 	});
-
-	// Typewriter dialog box
-	// createTextBox(this, 100, 100, {
-	// 	wrapWidth: 500,
-	// })
-	// .start(content, 20);
-
-
-}
-
-const GetValue = Phaser.Utils.Objects.GetValue;
-var createTextBox = function (scene, x, y, config) {
-    var wrapWidth = GetValue(config, 'wrapWidth', 0);
-    var fixedWidth = GetValue(config, 'fixedWidth', 0);
-    var fixedHeight = GetValue(config, 'fixedHeight', 0);
-    var textBox = scene.rexUI.add.textBox({
-            x: x,
-            y: y,
-
-            background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 20, COLOR_PRIMARY)
-                .setStrokeStyle(2, COLOR_LIGHT),
-
-            icon: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 20, COLOR_DARK),
-
-            // text: getBuiltInText(scene, wrapWidth, fixedWidth, fixedHeight),
-            text: getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight),
-
-            action: scene.add.image(0, 0, 'nextPage').setTint(COLOR_LIGHT).setVisible(false),
-
-            space: {
-                left: 20,
-                right: 20,
-                top: 20,
-                bottom: 20,
-                icon: 10,
-                text: 10,
-            }
-        })
-        .setOrigin(0)
-        .layout();
-
-    textBox
-        .setInteractive()
-        .on('pointerdown', function () {
-            var icon = this.getElement('action').setVisible(false);
-            this.resetChildVisibleState(icon);
-            if (this.isTyping) {
-                this.stop(true);
-            } else {
-                this.typeNextPage();
-            }
-        }, textBox)
-        .on('pageend', function () {
-            if (this.isLastPage) {
-                return;
-            }
-
-            var icon = this.getElement('action').setVisible(true);
-            this.resetChildVisibleState(icon);
-            icon.y -= 30;
-            var tween = scene.tweens.add({
-                targets: icon,
-                y: '+=30', // '+=100'
-                ease: 'Bounce', // 'Cubic', 'Elastic', 'Bounce', 'Back'
-                duration: 500,
-                repeat: 0, // -1: infinity
-                yoyo: false
-            });
-        }, textBox)
-    //.on('type', function () {
-    //})
-
-    return textBox;
-}
-
-var getBuiltInText = function (scene, wrapWidth, fixedWidth, fixedHeight) {
-    return scene.add.text(0, 0, '', {
-            fontSize: '12px',
-            wordWrap: {
-                width: wrapWidth
-            },
-            maxLines: 3
-        })
-        .setFixedSize(fixedWidth, fixedHeight);
-}
-
-var getBBcodeText = function (scene, wrapWidth, fixedWidth, fixedHeight) {
-    return scene.rexUI.add.BBCodeText(0, 0, '', {
-        fixedWidth: fixedWidth,
-        fixedHeight: fixedHeight,
-
-		style: {
-			font: '8px Courier', fill: '#00ff00',
-			wrap: {
-				mode: 0,     // 0|'none'|1|'word'|2|'char'|'character'
-				width: 0
-			}
-		},
-        wrap: {
-            mode: 'word',
-            width: wrapWidth
-        },
-        maxLines: 3
-    })
-}
-
-var createLabel = function (scene, text) {
-    return scene.rexUI.add.label({
-        // width: 40,
-        // height: 40,
-
-        background: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 20, 0x5e92f3),
-
-        text: scene.add.text(0, 0, text, {
-            fontSize: '24px'
-        }),
-
-        space: {
-            left: 10,
-            right: 10,
-            top: 10,
-            bottom: 10
-        }
-    });
 }
 
 function InitPubNub() {
+	// jeremy UUID = 'd03e9034-c275-4241-b046-0ea2299dad02'
+	// mario's UUID = '5227a8bc-9fdc-42e3-8680-979f09df879d'
+	var uuid = Phaser.Utils.String.UUID();
+	console.log("uuid = " + uuid);
 	console.log("Initializing PubNub hypothetically")
 	this.pubnub = new PubNub({
 		subscribeKey: _subscribeKey,
@@ -422,7 +237,7 @@ function InitPubNub() {
 	this.pubnub.addListener({
 		message: function (m) {
 			// handle messages
-			if(m.message.type=="game_turn_v1"){
+			if(m.message.title=="game_turn_v1"){
 				console.log("Process game turn!!!!!")
 				ProcessReceivedTurn(m)
 			}
@@ -467,29 +282,10 @@ function InitPubNub() {
 	// 	}
 	// );
 
-	var gameBoard = {
-		"name": "Kobayashi Maru",
-		"subject vessels": ["FR DD Reliant", "FR DD Reliant"
-
-		],
-		"location": "3 points from Altair 6"
-	}
-
 	this.pubnub.subscribe({
 		channels: ["my_channel"]
 	});
 
-	var publishPayload = {
-		channel: "my_channel",
-		message: {
-			type: "Connection",
-			title: "Greetingss bitchezzzz",
-		}
-	}
-
-	this.pubnub.publish(publishPayload, function (status, response) {
-		console.log(status, response);
-	})
 }
 
 function onDown (sprite) {
@@ -500,7 +296,7 @@ function onDown (sprite) {
 function update(time, delta) {
 	// // Apply the controls to the camera each update tick of the game
 	// controls.update(delta);
-	// var gameObjects = shipGroup.getChildren(); // array of game objects
+	// var gameObjects = shipGroup.getChildren();
 	// for (let index = 0; index < gameObjects.length; index++) {
 	// 	tempShip = gameObjects[index];
 
@@ -515,18 +311,17 @@ function update(time, delta) {
 	// }
 }
 
+function LevelSet(){
+
+}
+
 function MoveForward(){
-	var tempShip = shipGroup.getChildren()[currentPlayer]; // array of game objects
 	var publishPayload = {
 		channel: "my_channel",
 		message: {
-			type: "game_turn_v1",
+			title: "game_turn_v1",
 			player: currentPlayer,
-			description: "Momvement registered!",
-			ship: {"x":tempShip.x,
-			"y":tempShip.y,
-			"rotation":parseInt(Phaser.Math.RoundTo(Phaser.Math.RadToDeg(tempShip.rotation))%360)
-			}
+			type: "move forward",
 		}
 	}
 	this.pubnub.publish(publishPayload, function (status, response) {
@@ -535,20 +330,44 @@ function MoveForward(){
 }
 
 function TurnLeft(){
-	var tempShip = shipGroup.getChildren()[currentPlayer]; // array of game objects
-	tempShip.angle = (tempShip.angle-=30)%360;
+	var publishPayload = {
+		channel: "my_channel",
+		message: {
+			title: "game_turn_v1",
+			player: currentPlayer,
+			type: "turn left"
+		}
+	}
+	this.pubnub.publish(publishPayload, function (status, response) {
+		console.log(status, response);
+	})
 }
 
 function TurnRight(){
-	var tempShip = shipGroup.getChildren()[currentPlayer]; // array of game objects
-	tempShip.angle = (tempShip.angle+=30)%360;
+	var publishPayload = {
+		channel: "my_channel",
+		message: {
+			title: "game_turn_v1",
+			player: currentPlayer,
+			type: "turn right"
+		}
+	}
+	this.pubnub.publish(publishPayload, function (status, response) {
+		console.log(status, response);
+	})
 }
 
 function ProcessReceivedTurn(m){
 	console.log(m.message)
-	// var tempShip = shipGroup.getChildren()[currentPlayer]; // array of game objects
+	var tempShip = shipGroup.getChildren()[currentPlayer];
+	if(m.message.title=="game_turn_v1"){
+		console.log("Process game turn!!!!!")
+		ProcessReceivedTurn(m)
+	}
+	
+	// var tempShip = shipGroup.getChildren()[currentPlayer];
 	// // Move Forward
-	// var tempShip = shipGroup.getChildren()[currentPlayer]; // array of game objects
+	// var tempShip = shipGroup.getChildren()[currentPlayer];
 	// var speed_length = 30.25;
 	// var speed_x = speed_length * Math.cos(Phaser.Math.DegToRad(tempShip.angle));
 	// var speed_y = speed_length * Math.sin(Phaser.Math.DegToRad(tempShip.angle));
@@ -557,4 +376,10 @@ function ProcessReceivedTurn(m){
 	// this.pubnub.publish(publishPayload, function (status, response) {
 	// 	console.log(status, response);
 	// })
+
+	// Turn left
+	// tempShip.angle = (tempShip.angle-=30)%360;
+
+	// Turn Right
+	// tempShip.angle = (tempShip.angle+=30)%360;
 }
