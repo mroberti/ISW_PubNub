@@ -353,11 +353,7 @@ function InitPubNub(uuid) {
 		this.pubnub.subscribe({
 			channels: ["my_channel"]
 		});
-		var timetoken = this.pubnub.time();
-		console.log("Timetoken: " + timetoken);
 	}else{
-		var timetoken = this.pubnub.time();
-		console.log("Timetoken: " + timetoken);
 		console.log("PubNub already initialized")
 	}
 }
@@ -466,3 +462,46 @@ function ProcessReceivedTurn(m){
 	// Turn Right
 	// tempShip.angle = (tempShip.angle+=30)%360;
 }
+
+// {
+// 	"gameName": "Federation raid on Klingon Supply Base",
+// 	"created": 2016,
+// 	"secretBase": "Super tower",
+// 	"active": true,
+// 	"description": "(P7.0) THE WYN RADIATION ZONE The WYN Star Cluster is surrounded by a zone of intense radiation. This is different than (P15.0). Ships which enter or depart WYN space can only do so by moving through the WYN radiation zone at high warp speed (greater than combat speeds). Only ships which have at least one box of shielding on every shield position and which are capable of disengaging by acceleration (C7.1) may make the attempt. For exceptions to these requirements, see (P7.7), (P7.8) and (P7.9). See (P7.5) for the case of small units. When ships emerge from the zone, they undergo a process of recovery which makes them vulnerable to attack. These rules are used during the first turns of certain specifically designated scenarios. They reflect the condition of ships which have just left the zone.",
+// 	"ships": [
+// 	  {
+// 		"name": "Molecule Man",
+// 		"age": 29,
+// 		"secretIdentity": "Dan Jukes",
+// 		"powers": [
+// 		  "Radiation resistance",
+// 		  "Turning tiny",
+// 		  "Radiation blast"
+// 		]
+// 	  },
+// 	  {
+// 		"name": "Madame Uppercut",
+// 		"age": 39,
+// 		"secretIdentity": "Jane Wilson",
+// 		"powers": [
+// 		  "Million tonne punch",
+// 		  "Damage resistance",
+// 		  "Superhuman reflexes"
+// 		]
+// 	  },
+// 	  {
+// 		"name": "Eternal Flame",
+// 		"age": 1000000,
+// 		"secretIdentity": "Unknown",
+// 		"powers": [
+// 		  "Immortality",
+// 		  "Heat Immunity",
+// 		  "Inferno",
+// 		  "Teleportation",
+// 		  "Interdimensional travel"
+// 		]
+// 	  }
+// 	],
+// 	"players": []
+//   }
