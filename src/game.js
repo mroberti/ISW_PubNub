@@ -3,7 +3,7 @@ const config = {
 	type: Phaser.AUTO,
 	width: 1280,
 	height: 720,
-	parent: "game-container",
+	parent: "game-tempShip",
 	pixelArt: true,
 	scene: {
 		preload: preload,
@@ -51,32 +51,6 @@ function preload() {
 	this.load.scenePlugin({key: 'rexuiplugin', url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', sceneKey: 'rexUI'});
 	this.load.image('user', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/person.png');
 	this.load.image('password', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/key.png');
-}
-
-function MakeDraggable(theSprite, passedThis, passedCamera) {
-	// Let's put them randomly somewhere for now...
-	theSprite.on('pointerover', function () {
-		this.setTint(0x00ff00);
-	});
-
-	theSprite.on('pointerout', function () {
-		this.clearTint();
-	});
-
-	passedThis.input.setDraggable(theSprite);
-	passedThis.input.on('dragstart', function (pointer, gameObject) {
-		gameObject.setTint(0xff0000);
-	});
-
-	passedThis.input.on('drag', function (pointer, gameObject, dragX, dragY) {
-		gameObject.x = dragX;
-		gameObject.y = dragY;
-	});
-
-	passedThis.input.on('dragend', function (pointer, gameObject) {
-		gameObject.clearTint();
-		console.log("Sprite name: " + gameObject.name);
-	});
 }
 
 function BackgroundScroll(theSprite, passedThis) {
@@ -152,7 +126,27 @@ function create() {
 			tempShip.angle = parseInt(rand(0, 11) * 30);
 			tempShip.setScale(.5);
 			tempShip.name = "USS Smack U"
-			MakeDraggable(tempShip, this, camera);
+			tempShip.setInteractive();
+			this.input.setDraggable(tempShip);
+			tempShip.on('pointerover', function () {
+
+				tempShip.setTint(0x44ff44);
+		
+			});
+		
+			tempShip.on('pointerout', function () {
+		
+				tempShip.clearTint();
+		
+			});
+		
+			this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
+		
+				gameObject.x = dragX;
+				gameObject.y = dragY;
+		
+			});
+
 			this.print.text += count + '\n';
 	}
 
@@ -230,17 +224,15 @@ function create() {
 		orientation: 'y',
 		background: this.rexUI.add.roundRectangle(0, 0, 0, 0, 0, COLOR_PRIMARY),
 		buttons: [
-			createButton(this, 'Jeremy'),
-			createButton(this, 'Mario'),
+			createButton(this, players[0]),
+			createButton(this, players[1]),
 		],
 		type: ((CheckboxesMode) ? 'checkboxes' : 'radio'),
 		setValueCallback: function (button, value) {
 			button.getElement('icon')
 				.setFillStyle((value)? COLOR_LIGHT : undefined);
 		}
-
-	})
-		.layout()
+	}).layout()
 	//.drawBounds(this.add.graphics(), 0xff0000)
 
 	// Dump states
@@ -274,6 +266,7 @@ function create() {
 	buttons.on('button.click', dumpButtonStates);
 	dumpButtonStates();
 
+	
 }
 
 var createButton = function (scene, text, name) {
@@ -301,6 +294,7 @@ var createButton = function (scene, text, name) {
 
 
 function InitPubNub(uuid) {
+
 	if(pbinitialized == false){
 		pbinitialized = true
 		// jeremy UUID = 'd03e9034-c275-4241-b046-0ea2299dad02'
@@ -342,18 +336,13 @@ function InitPubNub(uuid) {
 		});
 
 
-		Date.prototype.toUnixTime = function () {
-			return this.getTime() / 1000 | 0
-		};
-		Date.time = function () {
-			return new Date().toUnixTime();
-		}
-		console.log("Date: " + Date.time());
 		// start, end, count are optional
 		// pubnub.fetchMessages(
 		// 	{
 		// 		channels: ['my_channel'],
-		// 		end: '1664910000000',
+		// 		end: '1665861716860',
+		
+		
 		// 		count: 100
 		// 	},
 		// 	(status, response) => {
@@ -364,7 +353,11 @@ function InitPubNub(uuid) {
 		this.pubnub.subscribe({
 			channels: ["my_channel"]
 		});
+		var timetoken = this.pubnub.time();
+		console.log("Timetoken: " + timetoken);
 	}else{
+		var timetoken = this.pubnub.time();
+		console.log("Timetoken: " + timetoken);
 		console.log("PubNub already initialized")
 	}
 }
