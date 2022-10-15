@@ -12,11 +12,12 @@ const config = {
 	}
 };
 
-const COLOR_PRIMARY = 0x4e342e;
-const COLOR_LIGHT = 0x7b5e57;
+const COLOR_PRIMARY = 0xAAAAAA;
+const COLOR_LIGHT = 0x00EDFF;
 const COLOR_DARK = 0x260e04;
-var players = ["Jeremy","Mario","what"]
 
+var players = ["Jeremy","Mario","what"]
+var pbinitialized = false;
 var currentPlayer = null;
 
 var content = 'Phaser is a fast, free, and fun open source HTML5 game framework that offers WebGL and Canvas rendering across desktop and mobile web browsers. Games can be compiled to iOS, Android and native apps by using 3rd party tools. You can use JavaScript or TypeScript for development.';
@@ -25,6 +26,7 @@ const game = new Phaser.Game(config);
 let controls;
 var shipGroup
 var buttonGroup
+var theUUID = null;
 
 var groupconfig = {
 	classType: Phaser.GameObjects.Sprite,
@@ -103,7 +105,7 @@ function BackgroundScroll(theSprite, passedThis) {
 }
 
 function create() {
-	InitPubNub();
+	//InitPubNub();
 
 	// in create()
 	let ship_data = this.cache.json.get('ship_sheetdata');
@@ -220,72 +222,151 @@ function create() {
 		});
 	}
 
+	// RexUI Radio buttons for detecting presence
+	var CheckboxesMode = false;  // False = radio mode
+
+	var buttons = this.rexUI.add.buttons({
+		x: 400, y: 300,
+		orientation: 'y',
+		background: this.rexUI.add.roundRectangle(0, 0, 0, 0, 0, COLOR_PRIMARY),
+		buttons: [
+			createButton(this, 'Jeremy'),
+			createButton(this, 'Mario'),
+		],
+		type: ((CheckboxesMode) ? 'checkboxes' : 'radio'),
+		setValueCallback: function (button, value) {
+			button.getElement('icon')
+				.setFillStyle((value)? COLOR_LIGHT : undefined);
+		}
+
+	})
+		.layout()
+	//.drawBounds(this.add.graphics(), 0xff0000)
+
+	// Dump states
+	var print = this.add.text(0, 0, '');
+	var dumpButtonStates = function () {
+		if (CheckboxesMode) { // checkboxes
+			var s = '';
+			buttons.data.each(function (buttons, key, value) {
+				s += `${key}:${value}\n`
+
+			})
+			print.setText(s);
+	
+			} else { // radio
+			print.setText(buttons.value);
+			console.log(buttons.value)
+			switch (buttons.value) {
+				// jeremy UUID = 'd03e9034-c275-4241-b046-0ea2299dad02'
+				// mario's UUID = '5227a8bc-9fdc-42e3-8680-979f09df879d'
+				case "Jeremy":
+					InitPubNub('d03e9034-c275-4241-b046-0ea2299dad02')
+					break;
+				case "Mario":
+					InitPubNub('5227a8bc-9fdc-42e3-8680-979f09df879d')
+					break;
+				default:
+					break;
+			}
+		}
+	}
+	buttons.on('button.click', dumpButtonStates);
+	dumpButtonStates();
+
 }
 
-function InitPubNub() {
-	// jeremy UUID = 'd03e9034-c275-4241-b046-0ea2299dad02'
-	// mario's UUID = '5227a8bc-9fdc-42e3-8680-979f09df879d'
-	var uuid = Phaser.Utils.String.UUID();
-	console.log("uuid = " + uuid);
-	console.log("Initializing PubNub hypothetically")
-	this.pubnub = new PubNub({
-		subscribeKey: _subscribeKey,
-		publishKey: _publishKey,
-		uuid: "player1"
-	});
+var createButton = function (scene, text, name) {
+    if (name === undefined) {
+        name = text;
+    }
+    var button = scene.rexUI.add.label({
+        width: 100,
+        height: 40,
+        text: scene.add.text(0, 0, text, {
+            fontSize: 18
+        }),
+        icon: scene.add.circle(0, 0, 10).setStrokeStyle(1, COLOR_DARK),
+        space: {
+            left: 10,
+            right: 10,
+            icon: 10
+        },
 
-	this.pubnub.addListener({
-		message: function (m) {
-			// handle messages
-			if(m.message.title=="game_turn_v1"){
-				console.log("Process game turn!!!!!")
-				ProcessReceivedTurn(m)
-			}
-		},
-		presence: function (p) {
-			// handle presence  
-		},
-		signal: function (s) {
-			// handle signals
-		},
-		objects: (objectEvent) => {
-			// handle objects
-		},
-		messageAction: function (ma) {
-			// handle message actions
-		},
-		file: function (event) {
-			// handle files  
-		},
-		status: function (s) {
-			// handle status  
-		},
-	});
+        name: name
+    });
+
+    return button;
+}
 
 
-	Date.prototype.toUnixTime = function () {
-		return this.getTime() / 1000 | 0
-	};
-	Date.time = function () {
-		return new Date().toUnixTime();
+function InitPubNub(uuid) {
+	if(pbinitialized == false){
+		pbinitialized = true
+		// jeremy UUID = 'd03e9034-c275-4241-b046-0ea2299dad02'
+		// mario's UUID = '5227a8bc-9fdc-42e3-8680-979f09df879d'
+		console.log("uuid = " + uuid);
+		console.log("Initializing PubNub hypothetically")
+		this.pubnub = new PubNub({
+			subscribeKey: _subscribeKey,
+			publishKey: _publishKey,
+			uuid: uuid
+		});
+
+		this.pubnub.addListener({
+			message: function (m) {
+				// handle messages
+				if(m.message.title=="game_turn_v1"){
+					console.log("Process game turn!!!!!")
+					ProcessReceivedTurn(m)
+				}
+			},
+			presence: function (p) {
+				// handle presence  
+			},
+			signal: function (s) {
+				// handle signals
+			},
+			objects: (objectEvent) => {
+				// handle objects
+			},
+			messageAction: function (ma) {
+				// handle message actions
+			},
+			file: function (event) {
+				// handle files  
+			},
+			status: function (s) {
+				// handle status  
+			},
+		});
+
+
+		Date.prototype.toUnixTime = function () {
+			return this.getTime() / 1000 | 0
+		};
+		Date.time = function () {
+			return new Date().toUnixTime();
+		}
+		console.log("Date: " + Date.time());
+		// start, end, count are optional
+		// pubnub.fetchMessages(
+		// 	{
+		// 		channels: ['my_channel'],
+		// 		end: '1664910000000',
+		// 		count: 100
+		// 	},
+		// 	(status, response) => {
+		// 		console.log(response)
+		// 	}
+		// );
+
+		this.pubnub.subscribe({
+			channels: ["my_channel"]
+		});
+	}else{
+		console.log("PubNub already initialized")
 	}
-	console.log("Date: " + Date.time());
-	// start, end, count are optional
-	// pubnub.fetchMessages(
-	// 	{
-	// 		channels: ['my_channel'],
-	// 		end: '1664910000000',
-	// 		count: 100
-	// 	},
-	// 	(status, response) => {
-	// 		console.log(response)
-	// 	}
-	// );
-
-	this.pubnub.subscribe({
-		channels: ["my_channel"]
-	});
-
 }
 
 function onDown (sprite) {
@@ -360,9 +441,18 @@ function TurnRight(){
 function ProcessReceivedTurn(m){
 	console.log(m.message)
 	var tempShip = shipGroup.getChildren()[currentPlayer];
-	if(m.message.title=="game_turn_v1"){
-		console.log("Process game turn!!!!!")
-		ProcessReceivedTurn(m)
+	switch (m.message.type) {
+		case "move forward":
+			console.log("Move forward")
+			break;
+		case "turn left":
+			console.log("Turn left")
+			break
+		case "turn right":
+			console.log("Turn right")
+			break
+		default:
+			console.log("No actionable turn...")
 	}
 	
 	// var tempShip = shipGroup.getChildren()[currentPlayer];
