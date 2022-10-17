@@ -392,6 +392,7 @@ function MoveForward(){
 			title: "game_turn_v1",
 			player: currentPlayer,
 			type: "move forward",
+			bonus:"The WYN Star Cluster stands as a huge (50 parsecs diameter) beacon at the crossroads of the Galaxy. Marking the point where the Klingon, Lyran, and Kzinti borders meet, the cluster itself was long considered uninhabitable. Surrounded by a dense cloud of highly radioactive dust, it was assumed that the entire cluster was saturated with deadly radiation. For more than a century, no one tried to find out otherwise."
 		}
 	}
 	this.pubnub.publish(publishPayload, function (status, response) {
@@ -464,44 +465,31 @@ function ProcessReceivedTurn(m){
 }
 
 // {
-// 	"gameName": "Federation raid on Klingon Supply Base",
-// 	"created": 2016,
-// 	"secretBase": "Super tower",
+// 	"mission": "Probing the WYN Cluster",
+// 	"description": "Metro City",
+// 	"Created": 1231231231,
 // 	"active": true,
-// 	"description": "(P7.0) THE WYN RADIATION ZONE The WYN Star Cluster is surrounded by a zone of intense radiation. This is different than (P15.0). Ships which enter or depart WYN space can only do so by moving through the WYN radiation zone at high warp speed (greater than combat speeds). Only ships which have at least one box of shielding on every shield position and which are capable of disengaging by acceleration (C7.1) may make the attempt. For exceptions to these requirements, see (P7.7), (P7.8) and (P7.9). See (P7.5) for the case of small units. When ships emerge from the zone, they undergo a process of recovery which makes them vulnerable to attack. These rules are used during the first turns of certain specifically designated scenarios. They reflect the condition of ships which have just left the zone.",
-// 	"ships": [
+// 	"players": [
 // 	  {
-// 		"name": "Molecule Man",
-// 		"age": 29,
-// 		"secretIdentity": "Dan Jukes",
-// 		"powers": [
-// 		  "Radiation resistance",
-// 		  "Turning tiny",
-// 		  "Radiation blast"
+// 		"name": "Mario",
+// 		"ships": [
+// 		  "CR Orion",
+// 		  "CV Lyran",
+// 		  "FF Kzinti",
+// 		  "CR Orion",
+// 		  "CV Lyran",
+// 		  "FF Kzinti"
 // 		]
 // 	  },
 // 	  {
-// 		"name": "Madame Uppercut",
-// 		"age": 39,
-// 		"secretIdentity": "Jane Wilson",
-// 		"powers": [
-// 		  "Million tonne punch",
-// 		  "Damage resistance",
-// 		  "Superhuman reflexes"
-// 		]
-// 	  },
-// 	  {
-// 		"name": "Eternal Flame",
-// 		"age": 1000000,
-// 		"secretIdentity": "Unknown",
-// 		"powers": [
-// 		  "Immortality",
-// 		  "Heat Immunity",
-// 		  "Inferno",
-// 		  "Teleportation",
-// 		  "Interdimensional travel"
+// 		"name": "Jeremy",
+// 		"ships": [
+// 		  "DD Klingon",
+// 		  "CV Klingon",
+// 		  "FF Klingon",
+// 		  "DD Klingon"
 // 		]
 // 	  }
 // 	],
-// 	"players": []
+// 	"whose turn": "Jeremy"
 //   }
