@@ -316,7 +316,14 @@ function InitPubNub(uuid) {
 				}
 			},
 			presence: function (p) {
-				// handle presence  
+				var action = p.action;
+				var channelName = p.channel;
+				var occupancy = p.occupancy;
+				var eventTimetoken = p.timetoken;
+				var occupantUUID = p.uuid;
+				var state = p.state;
+				var subscribeManager = p.subscription;
+				console.log("Presence response: User: "+p.uuid+" "+action)  
 			},
 			signal: function (s) {
 				// handle signals
@@ -351,7 +358,8 @@ function InitPubNub(uuid) {
 		// );
 
 		this.pubnub.subscribe({
-			channels: ["my_channel"]
+			channels: ["my_channel"],
+			withPresence: true
 		});
 	}else{
 		console.log("PubNub already initialized")
@@ -392,7 +400,7 @@ function MoveForward(){
 			title: "game_turn_v1",
 			player: currentPlayer,
 			type: "move forward",
-			bonus:"The WYN Star Cluster stands as a huge (50 parsecs diameter) beacon at the crossroads of the Galaxy. Marking the point where the Klingon, Lyran, and Kzinti borders meet, the cluster itself was long considered uninhabitable. Surrounded by a dense cloud of highly radioactive dust, it was assumed that the entire cluster was saturated with deadly radiation. For more than a century, no one tried to find out otherwise."
+			// bonus:"The WYN Star Cluster stands as a huge (50 parsecs diameter) beacon at the crossroads of the Galaxy. Marking the point where the Klingon, Lyran, and Kzinti borders meet, the cluster itself was long considered uninhabitable. Surrounded by a dense cloud of highly radioactive dust, it was assumed that the entire cluster was saturated with deadly radiation. For more than a century, no one tried to find out otherwise."
 		}
 	}
 	this.pubnub.publish(publishPayload, function (status, response) {
