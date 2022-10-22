@@ -79,7 +79,6 @@ function BackgroundScroll(theSprite, passedThis) {
 }
 
 function create() {
-	//InitPubNub();
 
 	// in create()
 	let ship_data = this.cache.json.get('ship_sheetdata');
@@ -125,27 +124,30 @@ function create() {
 			tempShip.y = rand(1, camera.height);
 			tempShip.angle = parseInt(rand(0, 11) * 30);
 			tempShip.setScale(.5);
-			tempShip.name = "USS Smack U"
-			tempShip.setInteractive();
-			this.input.setDraggable(tempShip);
-			tempShip.on('pointerover', function () {
+			tempShip.name = "Ship " + i;
 
-				tempShip.setTint(0x44ff44);
-		
+			this.input.setDraggable(tempShip);
+			//  The pointer has to be held down for 500ms before it's considered a drag
+			this.input.dragTimeThreshold = 250;
+
+			this.input.on('dragstart', function (pointer, gameObject) {
+
+				gameObject.setTint(0xff0000);
 			});
-		
-			tempShip.on('pointerout', function () {
-		
-				tempShip.clearTint();
-		
-			});
-		
+
 			this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
-		
+
 				gameObject.x = dragX;
 				gameObject.y = dragY;
-		
+
 			});
+
+			this.input.on('dragend', function (pointer, gameObject) {
+				console.log(gameObject.name)
+				gameObject.clearTint();
+
+			});
+
 
 			this.print.text += count + '\n';
 	}
@@ -361,6 +363,25 @@ function InitPubNub(uuid) {
 			channels: ["my_channel"],
 			withPresence: true
 		});
+
+		// I think once this is done, you can comment it out. Should last for
+		// The life of the channel?
+		// 
+		// this.pubnub.objects.setChannelMetadata({
+		// 	channel: "my_channel",
+		// 	data: {
+		// 	  name: "Starfleet Emergency Channel",
+		// 	  description: "This frequency is for Starfleet Emergency broadcasts only.",
+		// 	  custom: { "owner": "Federation President" }
+		// 	}
+		// });
+
+		console.log(this.pubnub.objects.getChannelMetadata({
+			channel: "my_channel"
+		}));
+		console.log("Moist: "+this.pubnub.objects.getMemberships());
+
+
 	}else{
 		console.log("PubNub already initialized")
 	}
@@ -448,6 +469,9 @@ function ProcessReceivedTurn(m){
 			break
 		case "turn right":
 			console.log("Turn right")
+			break
+		case "update location":
+			console.log("update location")
 			break
 		default:
 			console.log("No actionable turn...")
