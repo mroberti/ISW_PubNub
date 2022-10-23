@@ -139,6 +139,7 @@ function create() {
 			'x': (i*70)+32,
 			'y': 685,
 		});
+
 		console.log("i = " + i);
 		switch (i) {
 			case 0:
@@ -229,7 +230,8 @@ function create() {
 	buttons.on('button.click', dumpButtonStates);
 	dumpButtonStates();
 
-	
+	var container = new GamePiece(this, 800,400);
+	container.CreateImage('ship_textures', "asteroid1.png")
 }
 
 var createButton = function (scene, text, name) {
