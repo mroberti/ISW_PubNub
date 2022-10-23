@@ -16,7 +16,7 @@ const COLOR_PRIMARY = 0xAAAAAA;
 const COLOR_LIGHT = 0x00EDFF;
 const COLOR_DARK = 0x260e04;
 
-var players = ["Jeremy","Mario","what"]
+var players = ["Jeremy","Mario","Observer","what"]
 var pbinitialized = false;
 var currentPlayer = null;
 
@@ -25,7 +25,6 @@ var content = 'Phaser is a fast, free, and fun open source HTML5 game framework 
 const game = new Phaser.Game(config);
 let controls;
 var shipGroup
-var buttonGroup
 var theUUID = null;
 
 var groupconfig = {
@@ -61,10 +60,6 @@ function create() {
 
 	// Phaser supports multiple cameras, but you can access the default camera like this:
 	const camera = this.cameras.main;
-	shipGroup = this.make.group(groupconfig);
-    //  Let's create 2 Groups
-    buttonGroup = this.add.group();
-
 	// Set up the arrows to control the camera
 	const cursors = this.input.keyboard.createCursorKeys();
 	controls = new Phaser.Cameras.Controls.FixedKeyControl({
@@ -77,16 +72,13 @@ function create() {
 	});
 	console.log("camera.height = " + camera.height);
 	// var background = this.add.tileSprite(0, 0, camera.width*2, camera.height*2, 'background').setInteractive();
+	shipGroup = this.make.group(groupconfig);
+
 	var background = this.add.sprite(640, 360, 'background');
 	background.setScale(2.5)
 	// BackgroundScroll(background, this);
 	var ships = ["e2 titan.png", "e1 titan.png"];
 	console.log("The stuff " + ship_data.textures[0].frames[0].filename);
-
-	// // Check for substring
-	// var string = "foo",
-	// substring = "oo";
-	// console.log(string.includes(substring));
 
 	this.print = this.add.text(0, 0, 'Use Arrow keys to scroll camera');
 
@@ -132,27 +124,6 @@ function create() {
 
 
 			this.print.text += count + '\n';
-	}
-
-	// Make buttons
-	for (let i = 0; i < 3; i++) {
-		var button = new BasicButton({
-			'scene': this,
-			'sheet_data': "ui_textures",
-			'key': 'buttons',
-			'down': "buttonOver.png",
-			'up': "buttonOver2.png",
-			'over': "buttonOver2.png",
-			'x': 135,
-			'y': 500 + (i * 50),
-		});
-		button.name = (i);
-		console.log("Button " + button.name + " created");
-		button.on('pointerup', function () {
-			console.log("Button " + this.name + " pressed");
-			currentPlayer = parseInt(this.name)
-			console.log("currentPlayer = " + players[parseInt(this.name)]);
-		});
 	}
 
 	var my_buttons = ["gui_lrotate_64.png","gui_move_64.png","gui_rrotate_64.png","gui_beam_64.png", "gui_missiles_64.png", "gui_beam_64.png"]
@@ -210,6 +181,7 @@ function create() {
 		buttons: [
 			createButton(this, players[0]),
 			createButton(this, players[1]),
+			createButton(this, players[2]),
 		],
 		type: ((CheckboxesMode) ? 'checkboxes' : 'radio'),
 		setValueCallback: function (button, value) {
@@ -236,11 +208,18 @@ function create() {
 			switch (buttons.value) {
 				// jeremy UUID = 'd03e9034-c275-4241-b046-0ea2299dad02'
 				// mario's UUID = '5227a8bc-9fdc-42e3-8680-979f09df879d'
+				// Observer's UUID = 'e91f6ebc-52f8-11ed-bdc3-0242ac120002'
 				case "Jeremy":
 					InitPubNub('d03e9034-c275-4241-b046-0ea2299dad02')
+					currentPlayer = 0
 					break;
 				case "Mario":
 					InitPubNub('5227a8bc-9fdc-42e3-8680-979f09df879d')
+					currentPlayer = 1
+					break;
+				case "Observer":
+					InitPubNub('e91f6ebc-52f8-11ed-bdc3-0242ac120002')
+					currentPlayer = 2
 					break;
 				default:
 					break;
@@ -375,7 +354,7 @@ function onDown (sprite) {
 
 function update(time, delta) {
 	// // Apply the controls to the camera each update tick of the game
-	// controls.update(delta);
+	controls.update(delta);
 	// var gameObjects = shipGroup.getChildren();
 	// for (let index = 0; index < gameObjects.length; index++) {
 	// 	tempShip = gameObjects[index];
