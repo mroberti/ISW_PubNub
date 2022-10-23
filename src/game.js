@@ -53,31 +53,6 @@ function preload() {
 	this.load.image('password', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/key.png');
 }
 
-function BackgroundScroll(theSprite, passedThis) {
-	theSprite.setScale(.5);
-	theSprite.on('pointerover', function () {
-		this.setTint(0x00ff00);
-	});
-
-	theSprite.on('pointerout', function () {
-		this.clearTint();
-	});
-
-	passedThis.input.setDraggable(theSprite);
-	passedThis.input.on('dragstart', function (pointer, gameObject) {
-		gameObject.setTint(0xff0000);
-	});
-
-	passedThis.input.on('drag', function (pointer, gameObject, dragX, dragY) {
-		gameObject.tilePositionX = dragX;
-		gameObject.tilePositionY = dragY;
-	});
-
-	passedThis.input.on('dragend', function (pointer, gameObject) {
-		gameObject.clearTint();
-	});
-}
-
 function create() {
 
 	// in create()
@@ -128,11 +103,18 @@ function create() {
 
 			this.input.setDraggable(tempShip);
 			//  The pointer has to be held down for 500ms before it's considered a drag
-			this.input.dragTimeThreshold = 250;
+			this.input.dragTimeThreshold = 50;
 
 			this.input.on('dragstart', function (pointer, gameObject) {
-
 				gameObject.setTint(0xff0000);
+				this.scene.tweens.add({
+					targets: gameObject,
+					scale: .75,
+					duration: 100,
+					ease: 'Sine.easeInOut',
+					completeDelay: 1000,
+					yoyo: true
+				});
 			});
 
 			this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
@@ -379,8 +361,7 @@ function InitPubNub(uuid) {
 		console.log(this.pubnub.objects.getChannelMetadata({
 			channel: "my_channel"
 		}));
-		console.log("Moist: "+this.pubnub.objects.getMemberships());
-
+		console.log("getMemberships: "+this.pubnub.objects.getMemberships());
 
 	}else{
 		console.log("PubNub already initialized")
@@ -427,6 +408,20 @@ function MoveForward(){
 	this.pubnub.publish(publishPayload, function (status, response) {
 		console.log(status, response);
 	})
+
+	this.pubnub.hereNow(
+		{
+		  channels: ["my_channel"],
+		  includeState: true
+		},
+		function (status, response) {
+		  console.log(status, response);
+		  console.log(response.channels.my_channel.occupants)
+		  for (let i = 0; i < response.channels.my_channel.occupants.length; i++) {
+			console.log("UUID #"+i+":"+response.channels.my_channel.occupants[i].uuid);
+		  }
+		}
+	);
 }
 
 function TurnLeft(){
