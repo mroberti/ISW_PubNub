@@ -90,22 +90,17 @@ function create() {
 
 	var background = this.add.sprite(640, 360, 'background');
 	background.setScale(2.5)
-	// BackgroundScroll(background, this);
+
 
 	this.print = this.add.text(0, 0, 'Use Arrow keys to scroll camera');
 
 
-
-	console.log("USS "+random_item(federation_ship_names));
-	console.log("USS "+random_item(federation_ship_names));
-	console.log("USS "+random_item(federation_ship_names));
-	console.log("USS "+random_item(federation_ship_names));
-	console.log("USS "+random_item(federation_ship_names));
-	console.log(random_item(klingon_ship_names));
-	console.log(random_item(klingon_ship_names));
-	console.log(random_item(klingon_ship_names));
-	console.log(random_item(klingon_ship_names));
-
+	for (let i = 0; i < 4; i++) {
+		console.log("USS "+random_item(federation_ship_names));
+	}
+	for (let i = 0; i < 4; i++) {
+		console.log("IKV "+random_item(klingon_ship_names));
+	}
 	for (let i = 0; i < 4; i++) {
 		var tempShip = new GamePiece(this, 800,400);
 		var data = ship_stats[random_item(ship_types)]
@@ -144,7 +139,7 @@ function create() {
 	});
 
 	this.input.on('dragend', function (pointer, gameObject) {
-		console.log(gameObject.name+PubNub.generateUUID())
+		console.log(gameObject.name)
 		gameObject.list[0].clearTint();
 	});
 	// for (let i = 0; i < ships.length; i++) {
