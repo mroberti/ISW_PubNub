@@ -57,7 +57,7 @@
 		"missileattackvalue": 6,
 		"missilesalvos": 2,
 		"movepoints": 6,
-		"shipclass": "battle cruiser"
+		"shipclass": "titan"
 	},
 	"destroyer": {
 		"beamattackvalue": 4,
@@ -83,18 +83,6 @@
 		"movepoints": 4,
 		"shipclass": "dreadnought"
 	},
-	"frigate": {
-		"beamattackvalue": 3,
-		"cws": 1,
-		"defensevalue": 4,
-		"hullpoints": 6,
-		"hvbeamattackvalue": 0,
-		"hvbeambonus": 0,
-		"missileattackvalue": 2,
-		"missilesalvos": 0,
-		"movepoints": 6,
-		"shipclass": "frigate"
-	},
 	"heavy cruiser": {
 		"beamattackvalue": 4,
 		"cws": 2,
@@ -106,18 +94,6 @@
 		"missilesalvos": 1,
 		"movepoints": 6,
 		"shipclass": "heavy cruiser"
-	},
-	"leviathan": {
-		"beamattackvalue": 14,
-		"cws": 8,
-		"defensevalue": 9,
-		"hullpoints": 36,
-		"hvbeamattackvalue": 12,
-		"hvbeambonus": 3,
-		"missileattackvalue": 12,
-		"missilesalvos": 6,
-		"movepoints": 5,
-		"shipclass": "leviathan"
 	},
 	"titan": {
 		"beamattackvalue": 14,

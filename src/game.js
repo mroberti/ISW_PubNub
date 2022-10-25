@@ -16,10 +16,11 @@ const COLOR_PRIMARY = 0xAAAAAA;
 const COLOR_LIGHT = 0x00EDFF;
 const COLOR_DARK = 0x260e04;
 
-var players = ["Jeremy","Mario","Observer","what"]
+var players = ["Jeremy","Mario","Observer","nobody"]
 var pbinitialized = false;
 var currentPlayer = null;
-
+var ship_types=["assault transport","scout","fighters","transport","destroyer","dreadnought","frigate","heavy cruiser","titan","light carrier","starbase","strike carrier","assault carrier",
+"super dreadnought"]
 var content = 'Phaser is a fast, free, and fun open source HTML5 game framework that offers WebGL and Canvas rendering across desktop and mobile web browsers. Games can be compiled to iOS, Android and native apps by using 3rd party tools. You can use JavaScript or TypeScript for development.';
 
 const game = new Phaser.Game(config);
@@ -41,6 +42,9 @@ var groupconfig = {
 
 function preload() {
 	this.load.path = 'assets/';
+	this.load.json('ship_stats', 'data/shipdata.json');
+	this.load.json('federation_ship_names', '/data/federation_ship_names.json');
+	this.load.json('klingon_ship_names', '/data/klingon_ship_names.json');
 	this.load.multiatlas('ship_textures', '/ships/allships.json');
 	this.load.json('ship_sheetdata', '/ships/allships.json');
 	this.load.multiatlas('ui_textures', '/ui/ui.json');
@@ -57,6 +61,16 @@ function create() {
 	// in create()
 	let ship_data = this.cache.json.get('ship_sheetdata');
 	let ui_data = this.cache.json.get('ui_sheetdata');
+	var ship_stats = this.cache.json.get('ship_stats');
+	var federation_ship_names = this.cache.json.get('federation_ship_names');
+	var klingon_ship_names = this.cache.json.get('klingon_ship_names');
+	function random_item(items)
+	{
+		return items[Math.floor(Math.random()*items.length)];
+	}
+
+	console.log(ship_stats[random_item(ship_types)]);	//console.log(ship_stats["assault carrier"]);
+
 
 	// Phaser supports multiple cameras, but you can access the default camera like this:
 	const camera = this.cameras.main;
@@ -77,55 +91,102 @@ function create() {
 	var background = this.add.sprite(640, 360, 'background');
 	background.setScale(2.5)
 	// BackgroundScroll(background, this);
-	var ships = ["e2 titan.png", "e1 titan.png"];
-	console.log("The stuff " + ship_data.textures[0].frames[0].filename);
 
 	this.print = this.add.text(0, 0, 'Use Arrow keys to scroll camera');
 
-	var count = 0
-	for (let i = 0; i < ships.length; i++) {
-		var fileName = ship_data.textures[0].frames[i].filename
-			var tempShip = this.add.sprite(0, 0, 'ship_textures', ships[i]).setInteractive();
-			shipGroup.add(tempShip);
-			tempShip.x = rand(1, camera.width);
-			tempShip.y = rand(1, camera.height);
-			tempShip.angle = parseInt(rand(0, 11) * 30);
-			tempShip.setScale(.5);
-			tempShip.name = "Ship " + i;
 
-			this.input.setDraggable(tempShip);
-			//  The pointer has to be held down for 500ms before it's considered a drag
-			this.input.dragTimeThreshold = 50;
 
-			this.input.on('dragstart', function (pointer, gameObject) {
-				gameObject.setTint(0xff0000);
-				this.scene.tweens.add({
-					targets: gameObject,
-					scale: .75,
-					duration: 100,
-					ease: 'Sine.easeInOut',
-					completeDelay: 1000,
-					yoyo: true
-				});
+	console.log("USS "+random_item(federation_ship_names));
+	console.log("USS "+random_item(federation_ship_names));
+	console.log("USS "+random_item(federation_ship_names));
+	console.log("USS "+random_item(federation_ship_names));
+	console.log("USS "+random_item(federation_ship_names));
+	console.log(random_item(klingon_ship_names));
+	console.log(random_item(klingon_ship_names));
+	console.log(random_item(klingon_ship_names));
+	console.log(random_item(klingon_ship_names));
+
+	for (let i = 0; i < 4; i++) {
+		var tempShip = new GamePiece(this, 800,400);
+		var data = ship_stats[random_item(ship_types)]
+		data.name = "USS "+random_item(federation_ship_names)
+		console.log("Attempting to use graphic "+data.shipclass)
+		tempShip.InitializePiece('ship_textures', "e1 "+data.shipclass+".png",data)
+		tempShip.setSize(100,100);
+		shipGroup.add(tempShip);
+		tempShip.x = rand(1, camera.width);
+		tempShip.y = rand(1, camera.height);
+		tempShip.list[0].angle = parseInt(rand(0, 11) * 30);
+
+		tempShip.setSize(100,100);
+		tempShip.setInteractive({ draggable: true });
+		//  The pointer has to be held down for 500ms before it's considered a drag
+		this.input.dragTimeThreshold = 50;
+
+		this.input.on('dragstart', function (pointer, gameObject) {
+			gameObject.list[0].setTint(0xff0000);
+			this.scene.tweens.add({
+				targets: gameObject,
+				scale: .75,
+				duration: 100,
+				ease: 'Sine.easeInOut',
+				completeDelay: 1000,
+				yoyo: true
 			});
-
-			this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
-
-				gameObject.x = dragX;
-				gameObject.y = dragY;
-
-			});
-
-			this.input.on('dragend', function (pointer, gameObject) {
-				console.log(gameObject.name)
-				gameObject.clearTint();
-
-			});
-
-
-			this.print.text += count + '\n';
+		});
 	}
 
+	this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
+
+		gameObject.x = dragX;
+		gameObject.y = dragY;
+
+	});
+
+	this.input.on('dragend', function (pointer, gameObject) {
+		console.log(gameObject.name+PubNub.generateUUID())
+		gameObject.list[0].clearTint();
+	});
+	// for (let i = 0; i < ships.length; i++) {
+	// 	var fileName = ship_data.textures[0].frames[i].filename
+	// 	var tempShip = this.add.sprite(0, 0, 'ship_textures', ships[i]).setInteractive();
+	// 	shipGroup.add(tempShip);
+	// 	tempShip.x = rand(1, camera.width);
+	// 	tempShip.y = rand(1, camera.height);
+	// 	tempShip.angle = parseInt(rand(0, 11) * 30);
+	// 	tempShip.setScale(.5);
+	// 	tempShip.name = "Ship " + i;
+
+	// 	this.input.setDraggable(tempShip);
+	// 	//  The pointer has to be held down for 500ms before it's considered a drag
+	// 	this.input.dragTimeThreshold = 50;
+
+	// 	this.input.on('dragstart', function (pointer, gameObject) {
+	// 		gameObject.setTint(0xff0000);
+	// 		this.scene.tweens.add({
+	// 			targets: gameObject,
+	// 			scale: .75,
+	// 			duration: 100,
+	// 			ease: 'Sine.easeInOut',
+	// 			completeDelay: 1000,
+	// 			yoyo: true
+	// 		});
+	// 	});
+
+	// 	this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
+
+	// 		gameObject.x = dragX;
+	// 		gameObject.y = dragY;
+
+	// 	});
+
+	// 	this.input.on('dragend', function (pointer, gameObject) {
+	// 		console.log(gameObject.name)
+	// 		gameObject.clearTint();
+	// 	});
+	// }
+
+	// Create the GUI buttons
 	var my_buttons = ["gui_lrotate_64.png","gui_move_64.png","gui_rrotate_64.png","gui_beam_64.png", "gui_missiles_64.png", "gui_beam_64.png"]
 	// console.log("Size of fucking controls "+my_buttons.length)
 	for (let i = 0; i < my_buttons.length; i++) {
@@ -230,8 +291,8 @@ function create() {
 	buttons.on('button.click', dumpButtonStates);
 	dumpButtonStates();
 
-	var container = new GamePiece(this, 800,400);
-	container.CreateImage('ship_textures', "asteroid1.png")
+
+
 }
 
 var createButton = function (scene, text, name) {
@@ -417,6 +478,7 @@ function TurnLeft(){
 	this.pubnub.publish(publishPayload, function (status, response) {
 		console.log(status, response);
 	})
+	console.log("Random UUID: "+PubNub.generateUUID());
 }
 
 function TurnRight(){
