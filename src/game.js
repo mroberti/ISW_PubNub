@@ -16,7 +16,7 @@ const COLOR_PRIMARY = 0xAAAAAA;
 const COLOR_LIGHT = 0x00EDFF;
 const COLOR_DARK = 0x260e04;
 
-var players = ["Jeremy","Mario","Observer","nobody"]
+var players = ["Marcus","Mario","Observer","nobody"]
 var pbinitialized = false;
 var currentPlayer = null;
 var ship_types=["assault transport","scout","fighters","transport","destroyer","dreadnought","frigate","heavy cruiser","titan","light carrier","starbase","strike carrier","assault carrier",
@@ -132,10 +132,8 @@ function create() {
 	}
 
 	this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
-
 		gameObject.x = dragX;
 		gameObject.y = dragY;
-
 	});
 
 	this.input.on('dragend', function (pointer, gameObject) {
@@ -266,7 +264,7 @@ function create() {
 				// jeremy UUID = 'd03e9034-c275-4241-b046-0ea2299dad02'
 				// mario's UUID = '5227a8bc-9fdc-42e3-8680-979f09df879d'
 				// Observer's UUID = 'e91f6ebc-52f8-11ed-bdc3-0242ac120002'
-				case "Jeremy":
+				case "Marcus":
 					InitPubNub('d03e9034-c275-4241-b046-0ea2299dad02')
 					currentPlayer = 0
 					break;
