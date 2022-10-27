@@ -140,48 +140,9 @@ function create() {
 		console.log(gameObject.name)
 		gameObject.list[0].clearTint();
 	});
-	// for (let i = 0; i < ships.length; i++) {
-	// 	var fileName = ship_data.textures[0].frames[i].filename
-	// 	var tempShip = this.add.sprite(0, 0, 'ship_textures', ships[i]).setInteractive();
-	// 	shipGroup.add(tempShip);
-	// 	tempShip.x = rand(1, camera.width);
-	// 	tempShip.y = rand(1, camera.height);
-	// 	tempShip.angle = parseInt(rand(0, 11) * 30);
-	// 	tempShip.setScale(.5);
-	// 	tempShip.name = "Ship " + i;
-
-	// 	this.input.setDraggable(tempShip);
-	// 	//  The pointer has to be held down for 500ms before it's considered a drag
-	// 	this.input.dragTimeThreshold = 50;
-
-	// 	this.input.on('dragstart', function (pointer, gameObject) {
-	// 		gameObject.setTint(0xff0000);
-	// 		this.scene.tweens.add({
-	// 			targets: gameObject,
-	// 			scale: .75,
-	// 			duration: 100,
-	// 			ease: 'Sine.easeInOut',
-	// 			completeDelay: 1000,
-	// 			yoyo: true
-	// 		});
-	// 	});
-
-	// 	this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
-
-	// 		gameObject.x = dragX;
-	// 		gameObject.y = dragY;
-
-	// 	});
-
-	// 	this.input.on('dragend', function (pointer, gameObject) {
-	// 		console.log(gameObject.name)
-	// 		gameObject.clearTint();
-	// 	});
-	// }
 
 	// Create the GUI buttons
 	var my_buttons = ["gui_lrotate_64.png","gui_move_64.png","gui_rrotate_64.png","gui_beam_64.png", "gui_missiles_64.png", "gui_beam_64.png"]
-	// console.log("Size of fucking controls "+my_buttons.length)
 	for (let i = 0; i < my_buttons.length; i++) {
 		var button = new BasicButton({
 			'scene': this,
@@ -226,28 +187,33 @@ function create() {
 		});
 	}
 
+		InitLoginButtons(this)
+}
+
+function InitLoginButtons(scene){
 	// RexUI Radio buttons for detecting presence
 	var CheckboxesMode = false;  // False = radio mode
 
-	var buttons = this.rexUI.add.buttons({
+	var buttons = scene.rexUI.add.buttons({
 		x: 400, y: 300,
 		orientation: 'y',
-		background: this.rexUI.add.roundRectangle(0, 0, 0, 0, 0, COLOR_PRIMARY),
+		// background: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 0, COLOR_PRIMARY),
+		background: scene.add.sprite(0, 0, "ui_textures", "shipPanel.png").setScale(2.5),
 		buttons: [
-			createButton(this, players[0]),
-			createButton(this, players[1]),
-			createButton(this, players[2]),
+			createButton(scene, players[0]),
+			createButton(scene, players[1]),
+			createButton(scene, players[2]),
 		],
 		type: ((CheckboxesMode) ? 'checkboxes' : 'radio'),
 		setValueCallback: function (button, value) {
 			button.getElement('icon')
 				.setFillStyle((value)? COLOR_LIGHT : undefined);
-		}
+		},
 	}).layout()
 	//.drawBounds(this.add.graphics(), 0xff0000)
 
 	// Dump states
-	var print = this.add.text(0, 0, '');
+	var print = scene.add.text(0, 0, '');
 	var dumpButtonStates = function () {
 		if (CheckboxesMode) { // checkboxes
 			var s = '';
@@ -283,9 +249,6 @@ function create() {
 	}
 	buttons.on('button.click', dumpButtonStates);
 	dumpButtonStates();
-
-
-
 }
 
 var createButton = function (scene, text, name) {
