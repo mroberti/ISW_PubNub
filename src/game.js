@@ -12,6 +12,8 @@ const config = {
 	}
 };
 
+const channel_name =""
+
 const COLOR_PRIMARY = 0xAAAAAA;
 const COLOR_LIGHT = 0x00EDFF;
 const COLOR_DARK = 0x260e04;
@@ -19,7 +21,7 @@ const COLOR_DARK = 0x260e04;
 var players = ["Marcus","Mario","Observer","nobody"]
 var pbinitialized = false;
 var currentPlayer = null;
-var ship_types=["assault transport","scout","fighters","transport","destroyer","dreadnought","frigate","heavy cruiser","titan","light carrier","starbase","strike carrier","assault carrier",
+var ship_types=["scout","fighters","transport","destroyer","dreadnought","heavy cruiser","titan","light carrier","starbase","strike carrier","assault carrier",
 "super dreadnought"]
 var content = 'Phaser is a fast, free, and fun open source HTML5 game framework that offers WebGL and Canvas rendering across desktop and mobile web browsers. Games can be compiled to iOS, Android and native apps by using 3rd party tools. You can use JavaScript or TypeScript for development.';
 
@@ -27,6 +29,7 @@ const game = new Phaser.Game(config);
 let controls;
 var shipGroup
 var theUUID = null;
+var ship_stats = null
 
 var groupconfig = {
 	classType: Phaser.GameObjects.Sprite,
@@ -61,13 +64,9 @@ function create() {
 	// in create()
 	let ship_data = this.cache.json.get('ship_sheetdata');
 	let ui_data = this.cache.json.get('ui_sheetdata');
-	var ship_stats = this.cache.json.get('ship_stats');
+	ship_stats = this.cache.json.get('ship_stats');
 	var federation_ship_names = this.cache.json.get('federation_ship_names');
 	var klingon_ship_names = this.cache.json.get('klingon_ship_names');
-	function random_item(items)
-	{
-		return items[Math.floor(Math.random()*items.length)];
-	}
 
 	console.log(ship_stats[random_item(ship_types)]);	//console.log(ship_stats["assault carrier"]);
 
@@ -141,51 +140,7 @@ function create() {
 		gameObject.list[0].clearTint();
 	});
 
-	// Create the GUI buttons
-	var my_buttons = ["gui_lrotate_64.png","gui_move_64.png","gui_rrotate_64.png","gui_beam_64.png", "gui_missiles_64.png", "gui_beam_64.png"]
-	for (let i = 0; i < my_buttons.length; i++) {
-		var button = new BasicButton({
-			'scene': this,
-			'sheet_data': "ui_textures",
-			'key': 'buttons',
-			'down': my_buttons[i],
-			'up': my_buttons[i],
-			'over': my_buttons[i],
-			'x': (i*70)+32,
-			'y': 685,
-		});
 
-		console.log("i = " + i);
-		switch (i) {
-			case 0:
-				button.name = "turn left";
-				break;
-			case 1:
-				button.name = "move forward";
-				break;
-			case 2:
-				button.name = "turn right";
-				break;
-			default:
-				button.name = "button " + (i+1);
-				break;
-		  }
-		  console.log("Button " + button.name + " created");
-		  button.on('pointerup', function () {
-			console.log("Button " + this.name + " pressed");
-			switch (this.name) {
-				case "turn left":
-					TurnLeft()
-					break;
-				case "move forward":
-					MoveForward()
-					break;
-				case "turn right":
-					TurnRight()
-					break;
-			}
-		});
-	}
 
 	InitLoginButtons(this)
 	var VTTImportData = 	[
@@ -561,6 +516,11 @@ function create() {
 
 }
 
+function random_item(items)
+{
+	return items[Math.floor(Math.random()*items.length)];
+}
+
 function InitLoginButtons(scene){
 	// RexUI Radio buttons for detecting presence
 	var CheckboxesMode = false;  // False = radio mode
@@ -620,6 +580,51 @@ function InitLoginButtons(scene){
 	}
 	buttons.on('button.click', dumpButtonStates);
 	dumpButtonStates();
+	// Create the GUI buttons
+	var my_buttons = ["gui_lrotate_64.png","gui_move_64.png","gui_rrotate_64.png","gui_beam_64.png", "gui_missiles_64.png", "gui_beam_64.png"]
+	for (let i = 0; i < my_buttons.length; i++) {
+		var button = new BasicButton({
+			'scene': scene,
+			'sheet_data': "ui_textures",
+			'key': 'buttons',
+			'down': my_buttons[i],
+			'up': my_buttons[i],
+			'over': my_buttons[i],
+			'x': (i*70)+32,
+			'y': 685,
+		});
+
+		console.log("i = " + i);
+		switch (i) {
+			case 0:
+				button.name = "turn left";
+				break;
+			case 1:
+				button.name = "move forward";
+				break;
+			case 2:
+				button.name = "turn right";
+				break;
+			default:
+				button.name = "button " + (i+1);
+				break;
+			}
+			console.log("Button " + button.name + " created");
+			button.on('pointerup', function () {
+			console.log("Button " + this.name + " pressed");
+			switch (this.name) {
+				case "turn left":
+					TurnLeft()
+					break;
+				case "move forward":
+					MoveForward()
+					break;
+				case "turn right":
+					TurnRight()
+					break;
+			}
+		});
+	}
 }
 
 var createButton = function (scene, text, name) {
@@ -666,6 +671,11 @@ function InitPubNub(uuid) {
 				if(m.message.title=="game_turn_v1"){
 					console.log("Process game turn!!!!!")
 					ProcessReceivedTurn(m)
+				}
+				if(m.message.title=="update channel metadata"){
+					console.log(this.pubnub.objects.getChannelMetadata({
+						channel: "my_channel"
+					}));
 				}
 			},
 			presence: function (p) {
@@ -715,21 +725,9 @@ function InitPubNub(uuid) {
 			withPresence: true
 		});
 
-		// I think once this is done, you can comment it out. Should last for
-		// The life of the channel?
-		// 
-		// this.pubnub.objects.setChannelMetadata({
-		// 	channel: "my_channel",
-		// 	data: {
-		// 	  name: "Starfleet Emergency Channel",
-		// 	  description: "This frequency is for Starfleet Emergency broadcasts only.",
-		// 	  custom: { "owner": "Federation President" }
-		// 	}
-		// });
-
-		console.log(this.pubnub.objects.getChannelMetadata({
-			channel: "my_channel"
-		}));
+		// console.log(this.pubnub.objects.getChannelMetadata({
+		// 	channel: "my_channel"
+		// }));
 		console.log("getMemberships: "+this.pubnub.objects.getMemberships());
 
 	}else{
@@ -809,17 +807,38 @@ function TurnLeft(){
 }
 
 function TurnRight(){
-	var publishPayload = {
+	// var publishPayload = {
+	// 	channel: "my_channel",
+	// 	message: {
+	// 		title: "game_turn_v1",
+	// 		player: currentPlayer,
+	// 		type: "turn right"
+	// 	}
+	// }
+	// this.pubnub.publish(publishPayload, function (status, response) {
+	// 	console.log(status, response);
+	// })
+
+	// I think once this is done, you can comment it out. Should last for
+	// The life of the channel?
+	// 
+	
+	this.pubnub.objects.setChannelMetadata({
 		channel: "my_channel",
-		message: {
-			title: "game_turn_v1",
-			player: currentPlayer,
-			type: "turn right"
+		title: "update channel metadata",
+		data: {
+			name: "Ermagherd Starfleet Emergency Channel",
+			description: "This frequency is for Starfleet Emergency broadcasts only.",
+			moisture: "wet",
+			custom: { "owner": "Federation President",
+					  "location": "Earth",
+					  "purpose": "Emergency",
+					  "ship": JSON.stringify(ship_stats[random_item(ship_types)])
 		}
 	}
-	this.pubnub.publish(publishPayload, function (status, response) {
-		console.log(status, response);
-	})
+	},function (status, response) {
+		console.log(status, response.data.custom.ship);
+	});
 }
 
 function ProcessReceivedTurn(m){
