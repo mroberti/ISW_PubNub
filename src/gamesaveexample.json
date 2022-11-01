@@ -1,0 +1,81 @@
+{
+  "gameBoard": {
+	"id":"game1",
+	"created": "2022-10-32T00:00:00.000Z",
+    "players": {
+      "Mario": {
+        "UUID": "ABC123",
+        "ships": {
+          "Enterprise": {
+            "beamattackvalue": 4,
+            "defensevalue": 6,
+            "hullpoints": 8,
+            "hvbeamattackvalue": 3,
+            "hvbeambonus": 1,
+            "missileattackvalue": 3,
+            "missilesalvos": 1,
+            "movepoints": 6,
+            "shipclass": "heavy cruiser"
+          },
+          "Reliant": {
+            "beamattackvalue": 6,
+            "defensevalue": 4,
+            "hullpoints": 6,
+            "hvbeamattackvalue": 3,
+            "hvbeambonus": 1,
+            "movepoints": 6,
+            "shipclass": "destroyer"
+          },
+          "Farragut": {
+            "beamattackvalue": 4,
+            "defensevalue": 5,
+            "hullpoints": 5,
+            "hvbeamattackvalue": 5,
+            "hvbeambonus": 0,
+            "missileattackvalue": 4,
+            "missilesalvos": 2,
+            "movepoints": 6,
+            "shipclass": "destroyer"
+          }
+        }
+      },
+      "Craig": {
+        "UUID": "fgh662",
+        "ships": {
+          "K'Maq": {
+            "beamattackvalue": 4,
+            "defensevalue": 6,
+            "hullpoints": 8,
+            "hvbeamattackvalue": 3,
+            "hvbeambonus": 1,
+            "missileattackvalue": 3,
+            "missilesalvos": 1,
+            "movepoints": 6,
+            "shipclass": "heavy cruiser"
+          },
+          "K'Mirra": {
+            "beamattackvalue": 6,
+            "defensevalue": 4,
+            "hullpoints": 6,
+            "hvbeamattackvalue": 3,
+            "hvbeambonus": 1,
+            "movepoints": 6,
+            "shipclass": "destroyer"
+          },
+          "K'mpec": {
+            "beamattackvalue": 4,
+            "cws": 1,
+            "defensevalue": 5,
+            "hullpoints": 5,
+            "hvbeamattackvalue": 5,
+            "hvbeambonus": 0,
+            "missileattackvalue": 4,
+            "missilesalvos": 0,
+            "movepoints": 6,
+            "shipclass": "destroyer"
+          }
+        }
+      }
+    }
+  }
+}

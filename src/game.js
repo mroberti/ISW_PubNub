@@ -18,7 +18,7 @@ const COLOR_PRIMARY = 0xAAAAAA;
 const COLOR_LIGHT = 0x00EDFF;
 const COLOR_DARK = 0x260e04;
 
-var players = ["Marcus","Mario","Observer","nobody"]
+var players = ["Craig","Mario","Marcus","Jeremy"]
 var pbinitialized = false;
 var currentPlayer = null;
 var ship_types=["scout","fighters","transport","destroyer","dreadnought","heavy cruiser","titan","light carrier","starbase","strike carrier","assault carrier",
@@ -94,40 +94,58 @@ function create() {
 	this.print = this.add.text(0, 0, 'Use Arrow keys to scroll camera');
 
 
-	for (let i = 0; i < 4; i++) {
+	for (let i = 0; i < players.length; i++) {
 		console.log("USS "+random_item(federation_ship_names));
 	}
-	for (let i = 0; i < 4; i++) {
+	for (let i = 0; i < players.length; i++) {
 		console.log("IKV "+random_item(klingon_ship_names));
 	}
-	for (let i = 0; i < 4; i++) {
-		var tempShip = new GamePiece(this, 800,400);
-		var data = ship_stats[random_item(ship_types)]
-		data.name = "USS "+random_item(federation_ship_names)
-		console.log("Attempting to use graphic "+data.shipclass)
-		tempShip.InitializePiece('ship_textures', "e1 "+data.shipclass+".png",data)
-		tempShip.setSize(100,100);
-		shipGroup.add(tempShip);
-		tempShip.x = rand(1, camera.width);
-		tempShip.y = rand(1, camera.height);
-		tempShip.list[0].angle = parseInt(rand(0, 11) * 30);
 
-		tempShip.setSize(100,100);
-		tempShip.setInteractive({ draggable: true });
-		//  The pointer has to be held down for 500ms before it's considered a drag
-		this.input.dragTimeThreshold = 50;
+	for (let i = 0; i < players.length; i++) {
+		for (let i = 0; i < 2; i++) {
+			if(i==0){
+				empireNumber = 1
+			}
+			if(i==1){
+				empireNumber = 2
+			}
+			if(i==2){
+				empireNumber = 7
+			}
+			if(i==3){
+				empireNumber = 1
+			}
+			var tempShip = new GamePiece(this, 800,400);
+			var data = ship_stats[random_item(ship_types)]
+			// console.log(data)
+			data.name = "USS "+random_item(federation_ship_names)
+			// console.log("Attempting to use graphic "+data.shipclass)
+			// console.log("URL composition "+"e"+empireNumber+" "+data.shipclass+".png")
+			tempShip.InitializePiece('ship_textures', "e"+empireNumber+" "+data.shipclass+".png",data)
+			console.log(data)
+			tempShip.setSize(100,100);
+			shipGroup.add(tempShip);
+			tempShip.x = rand(1, camera.width);
+			tempShip.y = rand(1, camera.height);
+			tempShip.list[0].angle = parseInt(rand(0, 11) * 30);
 
-		this.input.on('dragstart', function (pointer, gameObject) {
-			gameObject.list[0].setTint(0xff0000);
-			this.scene.tweens.add({
-				targets: gameObject,
-				scale: .75,
-				duration: 100,
-				ease: 'Sine.easeInOut',
-				completeDelay: 1000,
-				yoyo: true
+			tempShip.setSize(100,100);
+			tempShip.setInteractive({ draggable: true });
+			//  The pointer has to be held down for 500ms before it's considered a drag
+			this.input.dragTimeThreshold = 50;
+
+			this.input.on('dragstart', function (pointer, gameObject) {
+				gameObject.list[0].setTint(0xff0000);
+				this.scene.tweens.add({
+					targets: gameObject,
+					scale: .75,
+					duration: 100,
+					ease: 'Sine.easeInOut',
+					completeDelay: 1000,
+					yoyo: true
+				});
 			});
-		});
+		}
 	}
 
 	this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
@@ -140,379 +158,7 @@ function create() {
 		gameObject.list[0].clearTint();
 	});
 
-
-
 	InitLoginButtons(this)
-	var VTTImportData = 	[
-		[
-			{
-				"x": 13,
-				"y": 10
-			},
-			{
-				"x": 16,
-				"y": 10
-			},
-			{
-				"x": 17,
-				"y": 10
-			},
-			{
-				"x": 13,
-				"y": 10
-			}
-		],
-		[
-			{
-				"x": 16,
-				"y": 9
-			},
-			{
-				"x": 16,
-				"y": 10
-			},
-			{
-				"x": 16,
-				"y": 9
-			}
-		],
-		[
-			{
-				"x": 15,
-				"y": 9
-			},
-			{
-				"x": 15,
-				"y": 10
-			},
-			{
-				"x": 15,
-				"y": 9
-			}
-		],
-		[
-			{
-				"x": 14,
-				"y": 9
-			},
-			{
-				"x": 14,
-				"y": 10
-			},
-			{
-				"x": 14,
-				"y": 9
-			}
-		],
-		[
-			{
-				"x": 13,
-				"y": 9
-			},
-			{
-				"x": 13,
-				"y": 10
-			},
-			{
-				"x": 13,
-				"y": 9
-			}
-		],
-		[
-			{
-				"x": 16,
-				"y": 7
-			},
-			{
-				"x": 16,
-				"y": 8
-			},
-			{
-				"x": 16,
-				"y": 7
-			}
-		],
-		[
-			{
-				"x": 15,
-				"y": 7
-			},
-			{
-				"x": 15,
-				"y": 8
-			},
-			{
-				"x": 15,
-				"y": 7
-			}
-		],
-		[
-			{
-				"x": 14,
-				"y": 7
-			},
-			{
-				"x": 14,
-				"y": 8
-			},
-			{
-				"x": 14,
-				"y": 7
-			}
-		],
-		[
-			{
-				"x": 13,
-				"y": 8
-			},
-			{
-				"x": 13,
-				"y": 7
-			},
-			{
-				"x": 13,
-				"y": 8
-			}
-		],
-		[
-			{
-				"x": 13,
-				"y": 7
-			},
-			{
-				"x": 17,
-				"y": 7
-			},
-			{
-				"x": 13,
-				"y": 7
-			}
-		],
-		[
-			{
-				"x": 16,
-				"y": 6
-			},
-			{
-				"x": 16,
-				"y": 7
-			},
-			{
-				"x": 16,
-				"y": 6
-			}
-		],
-		[
-			{
-				"x": 15,
-				"y": 6
-			},
-			{
-				"x": 15,
-				"y": 7
-			},
-			{
-				"x": 15,
-				"y": 6
-			}
-		],
-		[
-			{
-				"x": 14,
-				"y": 6
-			},
-			{
-				"x": 14,
-				"y": 7
-			},
-			{
-				"x": 14,
-				"y": 6
-			}
-		],
-		[
-			{
-				"x": 13,
-				"y": 6
-			},
-			{
-				"x": 13,
-				"y": 7
-			},
-			{
-				"x": 13,
-				"y": 6
-			}
-		],
-		[
-			{
-				"x": 15,
-				"y": 4
-			},
-			{
-				"x": 15,
-				"y": 5
-			},
-			{
-				"x": 15,
-				"y": 4
-			}
-		],
-		[
-			{
-				"x": 12,
-				"y": 8.5
-			},
-			{
-				"x": 12,
-				"y": 9
-			},
-			{
-				"x": 9,
-				"y": 9
-			},
-			{
-				"x": 9,
-				"y": 7
-			},
-			{
-				"x": 12,
-				"y": 7
-			},
-			{
-				"x": 12,
-				"y": 7.5
-			}
-		],
-		[
-			{
-				"x": 16,
-				"y": 4
-			},
-			{
-				"x": 16,
-				"y": 5
-			},
-			{
-				"x": 16,
-				"y": 4
-			}
-		],
-		[
-			{
-				"x": 14,
-				"y": 4
-			},
-			{
-				"x": 14,
-				"y": 5
-			},
-			{
-				"x": 14,
-				"y": 4
-			}
-		],
-		[
-			{
-				"x": 13,
-				"y": 4
-			},
-			{
-				"x": 13,
-				"y": 5
-			},
-			{
-				"x": 13,
-				"y": 4
-			}
-		],
-		[
-			{
-				"x": 11,
-				"y": 4
-			},
-			{
-				"x": 11,
-				"y": 5
-			},
-			{
-				"x": 12,
-				"y": 5
-			},
-			{
-				"x": 11,
-				"y": 5
-			},
-			{
-				"x": 11,
-				"y": 4
-			}
-		],
-		[
-			{
-				"x": 17,
-				"y": 11
-			},
-			{
-				"x": 17,
-				"y": 11
-			},
-			{
-				"x": 13,
-				"y": 11
-			}
-		],
-		[
-			{
-				"x": 12,
-				"y": 11
-			},
-			{
-				"x": 9,
-				"y": 11
-			},
-			{
-				"x": 9,
-				"y": 4
-			},
-			{
-				"x": 9.5,
-				"y": 4
-			}
-		],
-		[
-			{
-				"x": 10.5,
-				"y": 4
-			},
-			{
-				"x": 17,
-				"y": 4
-			},
-			{
-				"x": 17,
-				"y": 10
-			}
-		]
-	]
-
-	var multiplier = 32;
-	VTTImportData.forEach(nugget => {
-		for (let i = 0; i < nugget.length; i++) {
-			const element = nugget[i];
-			if(i>0){
-				var graphics = this.add.graphics();
-				graphics.lineStyle(5, 0x2ECC40);
-				graphics.beginPath();
-
-				graphics.moveTo(nugget[i-1].x*multiplier, nugget[i-1].y*multiplier);
-				graphics.lineTo(nugget[i].x*multiplier, nugget[i].y*multiplier);
-				graphics.closePath();
-				graphics.strokePath();
-				//console.log(nugget[i-1].x*multiplier, nugget[i-1].y*multiplier, nugget[i].x*multiplier, nugget[i].y*multiplier)
-			}
-		}
-	});
 
 }
 
@@ -533,7 +179,8 @@ function InitLoginButtons(scene){
 		buttons: [
 			createButton(scene, players[0]),
 			createButton(scene, players[1]),
-			createButton(scene, players[2]),
+			createButton(scene, players[2]),			
+			createButton(scene, players[3]),
 		],
 		type: ((CheckboxesMode) ? 'checkboxes' : 'radio'),
 		setValueCallback: function (button, value) {
