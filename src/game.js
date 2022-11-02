@@ -481,6 +481,7 @@ function TurnRight(){
 			name: "Ermagherd Starfleet Emergency Channel",
 			description: "This frequency is for Starfleet Emergency broadcasts only.",
 			moisture: "wet",
+			sandwich: "tuna",
 			custom: { "owner": "Federation President",
 					  "location": "Earth",
 					  "purpose": "Emergency",
