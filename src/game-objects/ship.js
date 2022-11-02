@@ -16,8 +16,11 @@ class Ship extends GamePiece {
     }
 
 	InitializePiece(imageSheet, imageName, data) {	
-		this.sprite=this.add(this.scene.add.sprite(0, 0, imageSheet, imageName))
-		console.log("Created Image and UUID:"+this.uuid)
+		this.data = data
+		this.name = this.data.name
+		this.owner = this.data.owner
+		// console.log("Created Image and UUID:"+this.uuid)
+		console.log(this.name,this.owner)
 	}
 }
 

@@ -2,6 +2,7 @@
   "gameBoard": {
 	"id":"game1",
 	"created": "2022-10-32T00:00:00.000Z",
+  "whoseTurn": "Craig",
     "players": {
       "Mario": {
         "UUID": "ABC123",

@@ -18,12 +18,17 @@ const COLOR_PRIMARY = 0xAAAAAA;
 const COLOR_LIGHT = 0x00EDFF;
 const COLOR_DARK = 0x260e04;
 
-var players = ["Craig","Mario","Marcus","Jeremy"]
+// var players = ["Craig","Mario","Marcus","Jeremy"]
+var players = ["Craig","Mario"]
 var pbinitialized = false;
 var currentPlayer = null;
 var ship_types=["scout","fighters","transport","destroyer","dreadnought","heavy cruiser","titan","light carrier","starbase","strike carrier","assault carrier",
 "super dreadnought"]
-var content = 'Phaser is a fast, free, and fun open source HTML5 game framework that offers WebGL and Canvas rendering across desktop and mobile web browsers. Games can be compiled to iOS, Android and native apps by using 3rd party tools. You can use JavaScript or TypeScript for development.';
+
+var gameBoard = {}
+gameBoard.players = players;
+
+
 
 const game = new Phaser.Game(config);
 let controls;
@@ -60,10 +65,6 @@ function preload() {
 }
 
 function create() {
-
-	// in create()
-	let ship_data = this.cache.json.get('ship_sheetdata');
-	let ui_data = this.cache.json.get('ui_sheetdata');
 	ship_stats = this.cache.json.get('ship_stats');
 	var federation_ship_names = this.cache.json.get('federation_ship_names');
 	var klingon_ship_names = this.cache.json.get('klingon_ship_names');
@@ -93,32 +94,33 @@ function create() {
 
 	this.print = this.add.text(0, 0, 'Use Arrow keys to scroll camera');
 
-
+	// My empire graphics are for ships from empires e1,e2, and e7
+	// so I gotta do some skulduggery here. Create ships for the 4 players.
 	for (let i = 0; i < players.length; i++) {
-		console.log("USS "+random_item(federation_ship_names));
-	}
-	for (let i = 0; i < players.length; i++) {
-		console.log("IKV "+random_item(klingon_ship_names));
-	}
-
-	for (let i = 0; i < players.length; i++) {
-		for (let i = 0; i < 2; i++) {
+		gameBoard.players[i].ships = {}
+		for (let j = 0; j < 2; j++) {
+			var shipName = ""
 			if(i==0){
 				empireNumber = 1
+				shipName="USS "+random_item(federation_ship_names);
 			}
 			if(i==1){
 				empireNumber = 2
+				shipName="IKV "+random_item(klingon_ship_names);
 			}
 			if(i==2){
 				empireNumber = 7
+				shipName="USS "+random_item(federation_ship_names);
 			}
 			if(i==3){
 				empireNumber = 1
+				shipName="IKV "+random_item(klingon_ship_names);
 			}
-			var tempShip = new GamePiece(this, 800,400);
+			var tempShip = new GamePiece(this, 1280,720);
 			var data = ship_stats[random_item(ship_types)]
 			// console.log(data)
-			data.name = "USS "+random_item(federation_ship_names)
+			data.name = shipName
+			data.owner = players[i]
 			// console.log("Attempting to use graphic "+data.shipclass)
 			// console.log("URL composition "+"e"+empireNumber+" "+data.shipclass+".png")
 			tempShip.InitializePiece('ship_textures', "e"+empireNumber+" "+data.shipclass+".png",data)
@@ -170,7 +172,7 @@ function random_item(items)
 function InitLoginButtons(scene){
 	// RexUI Radio buttons for detecting presence
 	var CheckboxesMode = false;  // False = radio mode
-
+	console.log("Bonus "+PubNub.generateUUID())
 	var buttons = scene.rexUI.add.buttons({
 		x: 400, y: 300,
 		orientation: 'y',
@@ -179,8 +181,6 @@ function InitLoginButtons(scene){
 		buttons: [
 			createButton(scene, players[0]),
 			createButton(scene, players[1]),
-			createButton(scene, players[2]),			
-			createButton(scene, players[3]),
 		],
 		type: ((CheckboxesMode) ? 'checkboxes' : 'radio'),
 		setValueCallback: function (button, value) {
@@ -216,8 +216,12 @@ function InitLoginButtons(scene){
 					InitPubNub('5227a8bc-9fdc-42e3-8680-979f09df879d')
 					currentPlayer = 1
 					break;
-				case "Observer":
+				case "Jeremy":
 					InitPubNub('e91f6ebc-52f8-11ed-bdc3-0242ac120002')
+					currentPlayer = 2
+					break;
+				case "Craig":
+					InitPubNub('ea409541-44f1-401d-8afa-833fe2e9b580')
 					currentPlayer = 2
 					break;
 				default:
