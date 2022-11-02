@@ -2,6 +2,9 @@
   "gameBoard": {
 	"id":"game1",
 	"created": "2022-10-32T00:00:00.000Z",
+  "mission name": "Exploring The WYN cluster",
+  "description":"Relations between the Federation and the Klingon Empire have been strained for some time. The Klingons have been making aggressive moves in the WYN cluster, and the Federation has decided to send a team of explorers to the area to investigate. The mission is to explore the WYN cluster and report back to Starfleet Command. The team will be equipped with a standard exploration kit, and will be expected to make contact with any alien species they encounter. The team will be expected to report back to Starfleet Command within 3 months. Good luck, and Godspeed.",
+  "victory conditions":"all ships destroyed",
   "whoseTurn": "Craig",
     "players": {
       "Mario": {
