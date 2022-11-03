@@ -394,6 +394,9 @@ function InitPubNub(uuid) {
 				var state = p.state;
 				var subscribeManager = p.subscription;
 				console.log("Presence response: User: "+p.uuid+" "+action)
+				console.log("getMemberships: "+this.pubnub.objects.getMemberships());
+				// https://www.pubnub.com/docs/sdks/javascript/api-reference/presence
+
 			},
 			signal: function (s) {
 				// handle signals
@@ -412,6 +415,7 @@ function InitPubNub(uuid) {
 			},
 		});
 
+		
 		// start, end, count are optional
 		// pubnub.fetchMessages(
 		// 	{
@@ -434,8 +438,6 @@ function InitPubNub(uuid) {
 		// console.log(this.pubnub.objects.getChannelMetadata({
 		// 	channel: "my_channel"
 		// }));
-		console.log("getMemberships: "+this.pubnub.objects.getMemberships());
-		// https://www.pubnub.com/docs/sdks/javascript/api-reference/presence
 	}else{
 		console.log("PubNub already initialized")
 	}
@@ -482,6 +484,20 @@ function MoveForward(){
 		console.log(status, response);
 	})
 
+}
+
+function TurnLeft(){
+	var publishPayload = {
+		channel: "my_channel",
+		message: {
+			title: "game_turn_v1",
+			player: currentPlayer,
+			type: "turn left"
+		}
+	}
+	// this.pubnub.publish(publishPayload, function (status, response) {
+	// 	console.log(status, response);
+	// })
 	this.pubnub.hereNow(
 		{
 		  channels: ["my_channel"],
@@ -495,20 +511,6 @@ function MoveForward(){
 		  }
 		}
 	);
-}
-
-function TurnLeft(){
-	var publishPayload = {
-		channel: "my_channel",
-		message: {
-			title: "game_turn_v1",
-			player: currentPlayer,
-			type: "turn left"
-		}
-	}
-	this.pubnub.publish(publishPayload, function (status, response) {
-		console.log(status, response);
-	})
 	console.log("Random UUID: "+PubNub.generateUUID());
 }
 
