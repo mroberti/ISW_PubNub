@@ -14,21 +14,24 @@ const config = {
 
 const channel_name =""
 
-const COLOR_PRIMARY = 0xAAAAAA;
-const COLOR_LIGHT = 0x00EDFF;
-const COLOR_DARK = 0x260e04;
+var presence_panel
 
-// var players = ["Craig","Mario","Marcus","Jeremy"]
-var players = ["Craig","Mario"]
+const COLOR_PRIMARY = 0xAAAAAA;
+const COLOR_LIGHT = 0x77FF22;
+const COLOR_DARK = 0x260e04;
+const ONLINE = 0x77FF22;
+const OFFLINE = 0xFF2200;
+
+var players = ["Craig","Mario","Marcus","Jeremy"]
+var players2 = {"d03e9034-c275-4241-b046-0ea2299dad02":"Marcus","5227a8bc-9fdc-42e3-8680-979f09df879d":"Mario","e91f6ebc-52f8-11ed-bdc3-0242ac120002":"Jeremy","ea409541-44f1-401d-8afa-833fe2e9b580":"Craig"}
+
 var pbinitialized = false;
 var currentPlayer = null;
-var ship_types=["scout","fighters","transport","destroyer","dreadnought","heavy cruiser","titan","light carrier","starbase","strike carrier","assault carrier",
+var ship_types=["scout","transport","destroyer","dreadnought","heavy cruiser","titan","light carrier","strike carrier","assault carrier",
 "super dreadnought"]
 
 var gameBoard = {}
 gameBoard.players = players;
-
-
 
 const game = new Phaser.Game(config);
 let controls;
@@ -124,7 +127,7 @@ function create() {
 			// console.log("Attempting to use graphic "+data.shipclass)
 			// console.log("URL composition "+"e"+empireNumber+" "+data.shipclass+".png")
 			tempShip.InitializePiece('ship_textures', "e"+empireNumber+" "+data.shipclass+".png",data)
-			console.log(data)
+			// console.log(data)
 			tempShip.setSize(100,100);
 			shipGroup.add(tempShip);
 			tempShip.x = rand(1, camera.width);
@@ -157,11 +160,14 @@ function create() {
 
 	this.input.on('dragend', function (pointer, gameObject) {
 		console.log(gameObject.name)
+		console.log("X,Y = "+gameObject.x+","+gameObject.y)
 		gameObject.list[0].clearTint();
 	});
 
-	InitLoginButtons(this)
-
+	presence_panel = DisplayPlayerPresence(this)
+	InitLogonButtons(this)
+	InitGUIButtons(this)
+	console.log("Testing UUID key: "+players2["d03e9034-c275-4241-b046-0ea2299dad02"])
 }
 
 function random_item(items)
@@ -169,68 +175,66 @@ function random_item(items)
 	return items[Math.floor(Math.random()*items.length)];
 }
 
-function InitLoginButtons(scene){
-	// RexUI Radio buttons for detecting presence
-	var CheckboxesMode = false;  // False = radio mode
-	console.log("Bonus "+PubNub.generateUUID())
+function InitLogonButtons(scene){
 	var buttons = scene.rexUI.add.buttons({
-		x: 400, y: 300,
+		x: 100, y: 300,
 		orientation: 'y',
-		// background: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 0, COLOR_PRIMARY),
 		background: scene.add.sprite(0, 0, "ui_textures", "shipPanel.png").setScale(2.5),
 		buttons: [
-			createButton(scene, players[0]),
-			createButton(scene, players[1]),
+			createButton(scene, 'Craig'),
+			createButton(scene, 'Mario'),
+			createButton(scene, 'Marcus'),
+			createButton(scene, 'Jeremy'),
 		],
-		type: ((CheckboxesMode) ? 'checkboxes' : 'radio'),
-		setValueCallback: function (button, value) {
-			button.getElement('icon')
-				.setFillStyle((value)? COLOR_LIGHT : undefined);
-		},
-	}).layout()
-	//.drawBounds(this.add.graphics(), 0xff0000)
 
-	// Dump states
-	var print = scene.add.text(0, 0, '');
-	var dumpButtonStates = function () {
-		if (CheckboxesMode) { // checkboxes
-			var s = '';
-			buttons.data.each(function (buttons, key, value) {
-				s += `${key}:${value}\n`
+		space: { item: 8 }
 
-			})
-			print.setText(s);
-	
-			} else { // radio
-			print.setText(buttons.value);
-			console.log(buttons.value)
-			switch (buttons.value) {
+	})
+	// Add a header child, which is not part of buttons
+	.add(createButton(scene, 'Choose a player'),
+		{
+			index: 0
+		}
+	)
+	// Add a footer child, which is not part of buttons
+	.add(createButton(scene, 'Footer'))
+	.layout()
+	buttons
+		.on('button.click', function (button, index, pointer, event) {
+			console.log("Click button: "+ button.text)
+			switch (button.text) {
 				// jeremy UUID = 'd03e9034-c275-4241-b046-0ea2299dad02'
 				// mario's UUID = '5227a8bc-9fdc-42e3-8680-979f09df879d'
 				// Observer's UUID = 'e91f6ebc-52f8-11ed-bdc3-0242ac120002'
 				case "Marcus":
 					InitPubNub('d03e9034-c275-4241-b046-0ea2299dad02')
 					currentPlayer = 0
+					buttons.destroy();
 					break;
 				case "Mario":
 					InitPubNub('5227a8bc-9fdc-42e3-8680-979f09df879d')
 					currentPlayer = 1
+					buttons.destroy();
 					break;
 				case "Jeremy":
 					InitPubNub('e91f6ebc-52f8-11ed-bdc3-0242ac120002')
-					currentPlayer = 2
+					currentPlayer = 3
+					buttons.destroy();
 					break;
 				case "Craig":
 					InitPubNub('ea409541-44f1-401d-8afa-833fe2e9b580')
-					currentPlayer = 2
+					currentPlayer = 4
+					buttons.destroy();
 					break;
 				default:
 					break;
 			}
-		}
-	}
-	buttons.on('button.click', dumpButtonStates);
-	dumpButtonStates();
+		})
+
+
+}
+
+function InitGUIButtons(scene){
 	// Create the GUI buttons
 	var my_buttons = ["gui_lrotate_64.png","gui_move_64.png","gui_rrotate_64.png","gui_beam_64.png", "gui_missiles_64.png", "gui_beam_64.png"]
 	for (let i = 0; i < my_buttons.length; i++) {
@@ -245,7 +249,7 @@ function InitLoginButtons(scene){
 			'y': 685,
 		});
 
-		console.log("i = " + i);
+		// console.log("i = " + i);
 		switch (i) {
 			case 0:
 				button.name = "turn left";
@@ -260,7 +264,7 @@ function InitLoginButtons(scene){
 				button.name = "button " + (i+1);
 				break;
 			}
-			console.log("Button " + button.name + " created");
+			// console.log("Button " + button.name + " created");
 			button.on('pointerup', function () {
 			console.log("Button " + this.name + " pressed");
 			switch (this.name) {
@@ -278,7 +282,63 @@ function InitLoginButtons(scene){
 	}
 }
 
-var createButton = function (scene, text, name) {
+function DisplayPlayerPresence(scene){
+	// RexUI Radio buttons for detecting presence
+	var CheckboxesMode = true;  // False = radio mode
+	var buttons = scene.rexUI.add.buttons({
+		x: 1200, y: 90,
+		orientation: 'y',
+		// background: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 0, COLOR_PRIMARY),
+		background: scene.add.sprite(0, 0, "ui_textures", "shipPanel.png").setScale(2.5),
+		buttons: [
+			createRadioButton(scene, players[0]),
+			createRadioButton(scene, players[1]),
+			createRadioButton(scene, players[2]),
+			createRadioButton(scene, players[3]),
+		],
+		type: ((CheckboxesMode) ? 'checkboxes' : 'radio'),
+		draggable:true
+	}).layout()
+	//.drawBounds(this.add.graphics(), 0xff0000)
+
+	var print = scene.add.text(0, 0, '');
+	var dumpButtonStates = function () {
+		if (CheckboxesMode) { // checkboxes
+			var s = '';
+			buttons.data.each(function (buttons, key, value) {
+				s += `${key}:${value}\n`
+			})
+			print.setText(s);
+	
+			} else { // radio
+			print.setText(buttons.value);
+			console.log(buttons.value)
+		}
+	}
+	console.log("Testing state of buttons: "+buttons.buttons[1].name)
+	buttons.buttons[0].getElement('icon').setFillStyle(OFFLINE)
+	buttons.buttons[1].getElement('icon').setFillStyle(ONLINE)
+	buttons.buttons[2].getElement('icon').setFillStyle(OFFLINE)
+	buttons.buttons[3].getElement('icon').setFillStyle(OFFLINE)
+	return buttons
+}
+
+var createButton = function (scene, text) {
+	return scene.rexUI.add.label({
+		width: 100,
+		height: 40,
+		background: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 20, COLOR_DARK),
+		text: scene.add.text(0, 0, text, {
+			fontSize: 18
+		}),
+		space: {
+			left: 10,
+			right: 10,
+		}
+	});
+}
+
+var createRadioButton = function (scene, text, name) {
     if (name === undefined) {
         name = text;
     }
@@ -301,15 +361,11 @@ var createButton = function (scene, text, name) {
     return button;
 }
 
-
 function InitPubNub(uuid) {
-
 	if(pbinitialized == false){
 		pbinitialized = true
-		// jeremy UUID = 'd03e9034-c275-4241-b046-0ea2299dad02'
-		// mario's UUID = '5227a8bc-9fdc-42e3-8680-979f09df879d'
 		console.log("uuid = " + uuid);
-		console.log("Initializing PubNub hypothetically")
+		console.log("Initializing PubNub")
 		this.pubnub = new PubNub({
 			subscribeKey: _subscribeKey,
 			publishKey: _publishKey,
@@ -337,7 +393,7 @@ function InitPubNub(uuid) {
 				var occupantUUID = p.uuid;
 				var state = p.state;
 				var subscribeManager = p.subscription;
-				console.log("Presence response: User: "+p.uuid+" "+action)  
+				console.log("Presence response: User: "+p.uuid+" "+action)
 			},
 			signal: function (s) {
 				// handle signals
@@ -355,7 +411,6 @@ function InitPubNub(uuid) {
 				// handle status  
 			},
 		});
-
 
 		// start, end, count are optional
 		// pubnub.fetchMessages(
@@ -380,7 +435,7 @@ function InitPubNub(uuid) {
 		// 	channel: "my_channel"
 		// }));
 		console.log("getMemberships: "+this.pubnub.objects.getMemberships());
-
+		// https://www.pubnub.com/docs/sdks/javascript/api-reference/presence
 	}else{
 		console.log("PubNub already initialized")
 	}
