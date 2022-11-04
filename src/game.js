@@ -165,6 +165,7 @@ function create() {
 	});
 
 	presence_panel = DisplayPlayerPresence(this)
+	// console.log("Presence panel "+presence_panel.buttons[0].getElement('icon').setFillStyle(ONLINE))
 	InitLogonButtons(this)
 	InitGUIButtons(this)
 	console.log("Testing UUID key: "+players2["d03e9034-c275-4241-b046-0ea2299dad02"])
@@ -315,9 +316,9 @@ function DisplayPlayerPresence(scene){
 			console.log(buttons.value)
 		}
 	}
-	console.log("Testing state of buttons: "+buttons.buttons[1].name)
+	// console.log("Testing state of buttons: "+buttons.buttons[1].name)
 	buttons.buttons[0].getElement('icon').setFillStyle(OFFLINE)
-	buttons.buttons[1].getElement('icon').setFillStyle(ONLINE)
+	buttons.buttons[1].getElement('icon').setFillStyle(OFFLINE)
 	buttons.buttons[2].getElement('icon').setFillStyle(OFFLINE)
 	buttons.buttons[3].getElement('icon').setFillStyle(OFFLINE)
 	return buttons
@@ -372,6 +373,11 @@ function InitPubNub(uuid) {
 			uuid: uuid
 		});
 
+		this.pubnub.subscribe({
+			channels: ["my_channel"],
+			withPresence: true
+		});
+
 		this.pubnub.addListener({
 			message: function (m) {
 				// handle messages
@@ -394,7 +400,28 @@ function InitPubNub(uuid) {
 				var state = p.state;
 				var subscribeManager = p.subscription;
 				console.log("Presence response: User: "+p.uuid+" "+action)
-				console.log("getMemberships: "+this.pubnub.objects.getMemberships());
+				switch (action) {
+					case 'join':
+						console.log("We made it in a join action?")
+						for (const [key, value] of Object.entries(players2)) {
+							console.log(key, value);
+							if(key==p.uuid){
+								console.log("Found a match for "+p.uuid)
+								for (let h = 0; h < presence_panel.buttons.length; h++) {
+									if(value==presence_panel.buttons[h].name){
+										presence_panel.buttons[h].getElement('icon').setFillStyle(ONLINE)
+										break;						
+								}
+								}
+							}
+						  }
+
+						break;
+				
+					default:
+						break;
+				}
+				// console.log("getMemberships: "+this.pubnub.objects.getMemberships());
 				// https://www.pubnub.com/docs/sdks/javascript/api-reference/presence
 
 			},
@@ -415,6 +442,7 @@ function InitPubNub(uuid) {
 			},
 		});
 
+
 		
 		// start, end, count are optional
 		// pubnub.fetchMessages(
@@ -429,11 +457,6 @@ function InitPubNub(uuid) {
 		// 		console.log(response)
 		// 	}
 		// );
-
-		this.pubnub.subscribe({
-			channels: ["my_channel"],
-			withPresence: true
-		});
 
 		// console.log(this.pubnub.objects.getChannelMetadata({
 		// 	channel: "my_channel"
@@ -531,23 +554,27 @@ function TurnRight(){
 	// The life of the channel?
 	// 
 	
-	this.pubnub.objects.setChannelMetadata({
-		channel: "my_channel",
-		title: "update channel metadata",
-		data: {
-			name: "Ermagherd Starfleet Emergency Channel",
-			description: "This frequency is for Starfleet Emergency broadcasts only.",
-			moisture: "wet",
-			sandwich: "tuna",
-			custom: { "owner": "Federation President",
-					  "location": "Earth",
-					  "purpose": "Emergency",
-					  "ship": JSON.stringify(ship_stats[random_item(ship_types)])
-		}
-	}
-	},function (status, response) {
-		console.log(status, response.data.custom.ship);
-	});
+	// this.pubnub.objects.setChannelMetadata({
+	// 	channel: "my_channel",
+	// 	title: "update channel metadata",
+	// 	data: {
+	// 		name: "Ermagherd Starfleet Emergency Channel",
+	// 		description: "This frequency is for Starfleet Emergency broadcasts only.",
+	// 		moisture: "wet",
+	// 		sandwich: "tuna",
+	// 		custom: { "owner": "Federation President",
+	// 				  "location": "Earth",
+	// 				  "purpose": "Emergency",
+	// 				  "ship": JSON.stringify(ship_stats[random_item(ship_types)])
+	// 	}
+	// }
+	// },function (status, response) {
+	// 	console.log(status, response.data.custom.ship);
+	// });
+	this.pubnub.unsubscribe({
+		channels: ['my_channel']
+	})
+	
 }
 
 function ProcessReceivedTurn(m){
