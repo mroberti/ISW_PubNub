@@ -376,6 +376,8 @@ function InitPubNub(uuid) {
 		this.pubnub.subscribe({
 			channels: ["my_channel"],
 			withPresence: true
+		},  function(status) {
+			console.log(status);
 		});
 
 		this.pubnub.addListener({
@@ -402,22 +404,11 @@ function InitPubNub(uuid) {
 				console.log("Presence response: User: "+p.uuid+" "+action)
 				switch (action) {
 					case 'join':
-						console.log("We made it in a join action?")
-						for (const [key, value] of Object.entries(players2)) {
-							console.log(key, value);
-							if(key==p.uuid){
-								console.log("Found a match for "+p.uuid)
-								for (let h = 0; h < presence_panel.buttons.length; h++) {
-									if(value==presence_panel.buttons[h].name){
-										presence_panel.buttons[h].getElement('icon').setFillStyle(ONLINE)
-										break;						
-								}
-								}
-							}
-						  }
-
+						UpdatePresencePanel()
 						break;
-				
+					case 'timeout':
+						UpdatePresencePanel()
+						break;				
 					default:
 						break;
 				}
@@ -443,7 +434,7 @@ function InitPubNub(uuid) {
 		});
 
 
-		
+		UpdatePresencePanel()		
 		// start, end, count are optional
 		// pubnub.fetchMessages(
 		// 	{
@@ -509,6 +500,35 @@ function MoveForward(){
 
 }
 
+function UpdatePresencePanel(){
+	console.log("UpdatePresencePanel")
+	this.pubnub.hereNow(
+		{
+		  channels: ["my_channel"],
+		  includeState: true
+		},
+		function (status, response) {
+		  console.log(status, response);
+		  console.log(response.channels.my_channel.occupants)
+		  for (let i = 0; i < response.channels.my_channel.occupants.length; i++) {
+			console.log("Occupant #"+i+":"+response.channels.my_channel.occupants[i].uuid);
+			for (const [key, value] of Object.entries(players2)) {
+				// console.log(key, value);
+				if(key==response.channels.my_channel.occupants[i].uuid){
+					// console.log("Found a match for "+response.channels.my_channel.occupants[i].uuid)
+					for (let h = 0; h < presence_panel.buttons.length; h++) {
+						if(value==presence_panel.buttons[h].name){
+							presence_panel.buttons[h].getElement('icon').setFillStyle(ONLINE)
+							break;						
+						}
+					}
+				}
+			  }
+		  }
+		}
+	);
+}
+
 function TurnLeft(){
 	var publishPayload = {
 		channel: "my_channel",
@@ -521,20 +541,8 @@ function TurnLeft(){
 	// this.pubnub.publish(publishPayload, function (status, response) {
 	// 	console.log(status, response);
 	// })
-	this.pubnub.hereNow(
-		{
-		  channels: ["my_channel"],
-		  includeState: true
-		},
-		function (status, response) {
-		  console.log(status, response);
-		  console.log(response.channels.my_channel.occupants)
-		  for (let i = 0; i < response.channels.my_channel.occupants.length; i++) {
-			console.log("UUID #"+i+":"+response.channels.my_channel.occupants[i].uuid);
-		  }
-		}
-	);
 	console.log("Random UUID: "+PubNub.generateUUID());
+	UpdatePresencePanel()
 }
 
 function TurnRight(){
