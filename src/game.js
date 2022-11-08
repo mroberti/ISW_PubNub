@@ -502,6 +502,9 @@ function MoveForward(){
 
 function UpdatePresencePanel(){
 	console.log("UpdatePresencePanel")
+	for (let h = 0; h < presence_panel.buttons.length; h++) {
+		presence_panel.buttons[h].getElement('icon').setFillStyle(OFFLINE)
+	}
 	this.pubnub.hereNow(
 		{
 		  channels: ["my_channel"],
