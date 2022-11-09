@@ -63,9 +63,10 @@ function preload() {
 	this.load.image("background", "/backgrounds/starfield1.png");
 	// The rexui plugin is required for the text box and other UI elements
 	this.load.scenePlugin({key: 'rexuiplugin', url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', sceneKey: 'rexUI'});
+	this.load.plugin('rexninepatch2plugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexninepatch2plugin.min.js', true);
 	this.load.image('user', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/person.png');
 	this.load.image('password', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/key.png');
-	this.load.image('bg2', '/ui/panel1.png');
+	this.load.image("bg2", "/ui/panel 3.png");
 }
 
 function create() {
@@ -169,7 +170,14 @@ function create() {
 	// console.log("Presence panel "+presence_panel.buttons[0].getElement('icon').setFillStyle(ONLINE))
 	InitLogonButtons(this)
 	InitGUIButtons(this)
-	console.log("Testing UUID key: "+players2["d03e9034-c275-4241-b046-0ea2299dad02"])
+	// console.log("Testing UUID key: "+players2["d03e9034-c275-4241-b046-0ea2299dad02"])
+	this.add.rexNinePatch2({
+		x: 500, y: 450,
+		width: 250, height: 200,
+		key: "bg2",
+		columns: [20, undefined, 20],
+		rows: [20, undefined, 20],
+	})
 }
 
 function random_item(items)
@@ -181,7 +189,13 @@ function InitLogonButtons(scene){
 	var buttons = scene.rexUI.add.buttons({
 		x: 100, y: 300,
 		orientation: 'y',
-		background: scene.add.sprite(0, 0, "ui_textures", "shipPanel.png").setScale(2.5),
+		background: 	// console.log("Testing UUID key: "+players2["d03e9034-c275-4241-b046-0ea2299dad02"])
+		scene.add.rexNinePatch2({
+			x: 500, y: 450,
+			key: "bg2",
+			columns: [20, undefined, 20],
+			rows: [20, undefined, 20],
+		}),
 		buttons: [
 			createButton(scene, 'Craig'),
 			createButton(scene, 'Mario'),
@@ -350,7 +364,8 @@ var createRadioButton = function (scene, text, name) {
         text: scene.add.text(0, 0, text, {
             fontSize: 18
         }),
-        icon: scene.add.circle(0, 0, 10).setStrokeStyle(1, COLOR_DARK),
+        // icon: scene.add.circle(0, 0, 10).setStrokeStyle(1, COLOR_DARK),
+		icon: scene.add.circle(0, 0, 10).setStrokeStyle(1, COLOR_DARK),
         space: {
             left: 10,
             right: 10,
