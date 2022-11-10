@@ -67,6 +67,8 @@ function preload() {
 	this.load.image('user', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/person.png');
 	this.load.image('password', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/key.png');
 	this.load.image("bg2", "/ui/panel 3.png");
+	this.load.image("radio on", "/ui/radio button on.png");
+	this.load.image("radio off", "/ui/radio button off.png");
 }
 
 function create() {
@@ -223,22 +225,22 @@ function InitLogonButtons(scene){
 				// mario's UUID = '5227a8bc-9fdc-42e3-8680-979f09df879d'
 				// Observer's UUID = 'e91f6ebc-52f8-11ed-bdc3-0242ac120002'
 				case "Marcus":
-					InitPubNub('d03e9034-c275-4241-b046-0ea2299dad02')
+					InitPubNub('d03e9034-c275-4241-b046-0ea2299dad02',scene)
 					currentPlayer = 0
 					buttons.destroy();
 					break;
 				case "Mario":
-					InitPubNub('5227a8bc-9fdc-42e3-8680-979f09df879d')
+					InitPubNub('5227a8bc-9fdc-42e3-8680-979f09df879d',scene)
 					currentPlayer = 1
 					buttons.destroy();
 					break;
 				case "Jeremy":
-					InitPubNub('e91f6ebc-52f8-11ed-bdc3-0242ac120002')
+					InitPubNub('e91f6ebc-52f8-11ed-bdc3-0242ac120002',scene)
 					currentPlayer = 3
 					buttons.destroy();
 					break;
 				case "Craig":
-					InitPubNub('ea409541-44f1-401d-8afa-833fe2e9b580')
+					InitPubNub('ea409541-44f1-401d-8afa-833fe2e9b580',scene)
 					currentPlayer = 4
 					buttons.destroy();
 					break;
@@ -332,10 +334,10 @@ function DisplayPlayerPresence(scene){
 		}
 	}
 	// console.log("Testing state of buttons: "+buttons.buttons[1].name)
-	buttons.buttons[0].getElement('icon').setFillStyle(OFFLINE)
-	buttons.buttons[1].getElement('icon').setFillStyle(OFFLINE)
-	buttons.buttons[2].getElement('icon').setFillStyle(OFFLINE)
-	buttons.buttons[3].getElement('icon').setFillStyle(OFFLINE)
+	// buttons.buttons[0].getElement('icon')
+	// buttons.buttons[1].getElement('icon')
+	// buttons.buttons[2].getElement('icon')
+	// buttons.buttons[3].getElement('icon')
 	return buttons
 }
 
@@ -365,7 +367,7 @@ var createRadioButton = function (scene, text, name) {
             fontSize: 18
         }),
         // icon: scene.add.circle(0, 0, 10).setStrokeStyle(1, COLOR_DARK),
-		icon: scene.add.circle(0, 0, 10).setStrokeStyle(1, COLOR_DARK),
+		icon: scene.add.sprite(0, 0, "radio off").setScale(.5),
         space: {
             left: 10,
             right: 10,
@@ -378,7 +380,7 @@ var createRadioButton = function (scene, text, name) {
     return button;
 }
 
-function InitPubNub(uuid) {
+function InitPubNub(uuid,scene) {
 	if(pbinitialized == false){
 		pbinitialized = true
 		console.log("uuid = " + uuid);
@@ -450,7 +452,7 @@ function InitPubNub(uuid) {
 		});
 
 
-		UpdatePresencePanel()		
+		UpdatePresencePanel(scene)		
 		// start, end, count are optional
 		// pubnub.fetchMessages(
 		// 	{
@@ -503,7 +505,7 @@ function LevelSet(){
 function UpdatePresencePanel(){
 	console.log("UpdatePresencePanel")
 	for (let h = 0; h < presence_panel.buttons.length; h++) {
-		presence_panel.buttons[h].getElement('icon').setFillStyle(OFFLINE)
+		presence_panel.buttons[h].setTexture("radio off")
 	}
 	this.pubnub.hereNow(
 		{
@@ -522,7 +524,7 @@ function UpdatePresencePanel(){
 					for (let h = 0; h < presence_panel.buttons.length; h++) {
 						if(value==presence_panel.buttons[h].name){
 							console.log("ONLINE: "+value)
-							presence_panel.buttons[h].getElement('icon').setFillStyle(ONLINE)
+							presence_panel.buttons[h].setTexture("radio on")
 							break;						
 						}
 					}
