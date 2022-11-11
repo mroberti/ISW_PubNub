@@ -22,8 +22,8 @@ const COLOR_DARK = 0x260e04;
 const ONLINE = 0x77FF22;
 const OFFLINE = 0xFF2200;
 
-var players = ["Craig","Mario","Marcus","Jeremy"]
-var players2 = {"d03e9034-c275-4241-b046-0ea2299dad02":"Marcus","5227a8bc-9fdc-42e3-8680-979f09df879d":"Mario","e91f6ebc-52f8-11ed-bdc3-0242ac120002":"Jeremy","ea409541-44f1-401d-8afa-833fe2e9b580":"Craig"}
+var players = ["Mukul","Mario","Marcus","Jeremy"]
+var players2 = {"d03e9034-c275-4241-b046-0ea2299dad02":"Marcus","5227a8bc-9fdc-42e3-8680-979f09df879d":"Mario","e91f6ebc-52f8-11ed-bdc3-0242ac120002":"Jeremy","ea409541-44f1-401d-8afa-833fe2e9b580":"Mukul"}
 
 var pbinitialized = false;
 var currentPlayer = null;
@@ -199,7 +199,7 @@ function InitLogonButtons(scene){
 			rows: [20, undefined, 20],
 		}),
 		buttons: [
-			createButton(scene, 'Craig'),
+			createButton(scene, 'Mukul'),
 			createButton(scene, 'Mario'),
 			createButton(scene, 'Marcus'),
 			createButton(scene, 'Jeremy'),
@@ -239,7 +239,7 @@ function InitLogonButtons(scene){
 					currentPlayer = 3
 					buttons.destroy();
 					break;
-				case "Craig":
+				case "Mukul":
 					InitPubNub('ea409541-44f1-401d-8afa-833fe2e9b580',scene)
 					currentPlayer = 4
 					buttons.destroy();
@@ -452,7 +452,7 @@ function InitPubNub(uuid,scene) {
 		});
 
 
-		UpdatePresencePanel(scene)		
+		UpdatePresencePanel()		
 		// start, end, count are optional
 		// pubnub.fetchMessages(
 		// 	{
