@@ -66,7 +66,7 @@ function preload() {
 	this.load.plugin('rexninepatch2plugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexninepatch2plugin.min.js', true);
 	this.load.image('user', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/person.png');
 	this.load.image('password', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/key.png');
-	this.load.image("bg2", "/ui/panel 3.png");
+	this.load.image("bg2", "/ui/theme 4/9slicewindow1.png");
 	this.load.image("radio on", "/ui/radio button on.png");
 	this.load.image("radio off", "/ui/radio button off.png");
 }
@@ -181,6 +181,28 @@ function create() {
 		rows: [20, undefined, 20],
 	})
 
+	var panel = this.rexUI.add.scrollablePanel({
+		x: 400, 
+		y: 100,
+		height:400,
+		width: 200,
+		orientation: 'x',
+        // space: { item: 50, top: 20, bottom: 20 }
+		scrollMode: 0,
+		panel: {
+			child: createRadioButton(this, players[0])
+		},
+	}).layout()
+
+	for (let i = 0; i < 4; i++) {
+		// Add new child
+		panel
+		.getElement('panel')
+		.add(
+			createRadioButton(this, players[i%3])
+		)
+	}
+	panel.layout()   
 }
 
 var createTextBox = function (scene, x, y, config) {
@@ -391,11 +413,26 @@ function InitGUIButtons(scene){
 function DisplayPlayerPresence(scene){
 	// RexUI Radio buttons for detecting presence
 	var CheckboxesMode = true;  // False = radio mode
+	var thePanel = scene.add.rexNinePatch2({
+		x: 100, y: 0,
+		width:500,
+		height:300,
+		key: 'bg2',
+		columns: [116, undefined, 115],
+		rows: [105, undefined, 105],
+		stretchMode: {
+			edge: 'scale',
+			internal: 'scale'
+		}
+		// maxFixedPartScale: 1
+	})
 	var buttons = scene.rexUI.add.buttons({
-		x: 1200, y: 90,
+		x: 1441, y: 150,
 		orientation: 'y',
-		// background: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 0, COLOR_PRIMARY),
-		background: scene.add.sprite(0, 0, "ui_textures", "shipPanel.png").setScale(2.5),
+		width:700,
+		height:300,
+		align: 'center',
+		background:thePanel,
 		buttons: [
 			createRadioButton(scene, players[0]),
 			createRadioButton(scene, players[1]),
@@ -406,6 +443,7 @@ function DisplayPlayerPresence(scene){
 		draggable:true
 	}).layout()
 	//.drawBounds(this.add.graphics(), 0xff0000)
+	thePanel.resize(700,300)
 
 	var print = scene.add.text(0, 0, '');
 	var dumpButtonStates = function () {

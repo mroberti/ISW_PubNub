@@ -4,7 +4,7 @@ class Ship extends GamePiece {
 	// Bar for health
 	// Bar for shield
 
-    constructor(scene, x, y) {
+    constructor(scene, x, y, data) {
         super(scene, x, y);
 		this.name = "GamePiece";
 		this.scene = scene
