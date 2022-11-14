@@ -11,7 +11,10 @@ const config = {
 		update: update
 	}
 };
-
+// this.data = data
+// this.uuid = this.data.uuid
+// this.empire = this.data.empire
+// this.name = this.data.name
 const channel_name =""
 
 var presence_panel
@@ -30,15 +33,12 @@ var currentPlayer = null;
 var ship_types=["scout","transport","destroyer","dreadnought","heavy cruiser","titan","light carrier","strike carrier","assault carrier",
 "super dreadnought"]
 
-var gameBoard = {}
-gameBoard.players = players;
-
 const game = new Phaser.Game(config);
 let controls;
 var shipGroup
 var theUUID = null;
 var ship_stats = null
-
+var gameBoard = null;
 var groupconfig = {
 	classType: Phaser.GameObjects.Sprite,
 	defaultKey: null,
@@ -76,6 +76,24 @@ function create() {
 	var federation_ship_names = this.cache.json.get('federation_ship_names');
 	var klingon_ship_names = this.cache.json.get('klingon_ship_names');
 
+	gameBoard = new GameBoard()
+	// Begin test of Gameboard and Player classes
+	for (const [uuid, name] of Object.entries(players2)) {
+		// console.log(uuid, name);
+		var data = {}
+		data.name = name
+		data.uuid = uuid
+		data.empire = Math.floor(Math.random()*3)+1
+		if(data.empire==3){
+			data.empire = 7
+		}
+		var tempPlayer = new Player(data);
+		gameBoard.AddPlayer(tempPlayer);
+		console.log(tempPlayer)
+	}
+
+
+
 	console.log(ship_stats[random_item(ship_types)]);	//console.log(ship_stats["assault carrier"]);
 
 
@@ -95,8 +113,8 @@ function create() {
 	// var background = this.add.tileSprite(0, 0, camera.width*2, camera.height*2, 'background').setInteractive();
 	shipGroup = this.make.group(groupconfig);
 
-	var background = this.add.sprite(640, 360, 'background');
-	background.setScale(2.5)
+	var background = this.add.sprite(0, 0, 'background');
+	background.setScale(8.0)
 
 
 	this.print = this.add.text(0, 0, 'Use Arrow keys to scroll camera');
@@ -123,21 +141,16 @@ function create() {
 				empireNumber = 1
 				shipName="IKV "+random_item(klingon_ship_names);
 			}
-			var tempShip = new GamePiece(this, 1280,720);
+			var tempShip = new Ship(this, 1280,720);
 			var data = ship_stats[random_item(ship_types)]
-			// console.log(data)
 			data.name = shipName
 			data.owner = players[i]
-			// console.log("Attempting to use graphic "+data.shipclass)
-			// console.log("URL composition "+"e"+empireNumber+" "+data.shipclass+".png")
 			tempShip.InitializePiece('ship_textures', "e"+empireNumber+" "+data.shipclass+".png",data)
-			// console.log(data)
 			tempShip.setSize(100,100);
 			shipGroup.add(tempShip);
 			tempShip.x = rand(1, camera.width);
 			tempShip.y = rand(1, camera.height);
 			tempShip.list[0].angle = parseInt(rand(0, 11) * 30);
-
 			tempShip.setSize(100,100);
 			tempShip.setInteractive({ draggable: true });
 			//  The pointer has to be held down for 500ms before it's considered a drag
@@ -188,7 +201,7 @@ function create() {
 		width: 200,
 		orientation: 'x',
         // space: { item: 50, top: 20, bottom: 20 }
-		scrollMode: 0,
+		scrollMode: 1,
 		panel: {
 			child: createRadioButton(this, players[0])
 		},
@@ -358,8 +371,6 @@ function InitLogonButtons(scene){
 					break;
 			}
 		})
-
-
 }
 
 function InitGUIButtons(scene){
@@ -373,8 +384,8 @@ function InitGUIButtons(scene){
 			'down': my_buttons[i],
 			'up': my_buttons[i],
 			'over': my_buttons[i],
-			'x': (i*70)+32,
-			'y': 685,
+			'x': (i*70)+34,
+			'y': config.height-34,
 		});
 
 		// console.log("i = " + i);
