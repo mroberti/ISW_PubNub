@@ -1,14 +1,16 @@
 class GameBoard {
 
-    constructor() {
- 		this.data = {}
+    constructor(create_date,owner,name,description) {
+ 		this.whose_turn = 0
+		// this.create_date = new Date()
+		this.owner = owner
 		this.players = []
-		// this.data = data
-		// this.ships = this.data.ships
+		this.description = description
+		this.name = name
     }
 
 	Serialize() {
-		var returnData = null
+		var returnData = {}
 		returnData.players = []
 		// We're gonna return the data object to make sure that
 		// we can restore the object later, or for updating
@@ -17,11 +19,7 @@ class GameBoard {
 			returnData.players[i] = this.players[i].Serialize()
 
 		}
-		return this.data
-	}
-
-	AddShip(ship) {
-
+		return returnData
 	}
 
 	AddPlayer(player) {

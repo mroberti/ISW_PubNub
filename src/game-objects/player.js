@@ -5,6 +5,7 @@ class Player {
 		this.uuid = this.data.uuid
 		this.empire = this.data.empire
 		this.name = this.data.name
+		this.ships = []
     }
 
 	AddShip(ship) {
@@ -12,13 +13,15 @@ class Player {
 	}
 	
 	Serialize() {
-		// We're gonna return the data object to make sure that
-		// we can restore the object later, or for updating
-		// game state
-		for (let i = 0; i < this.data.ships.length; i++) {
-			const element = this.data.ships[i];
+		var returnData = {}
+		returnData.uuid = this.uuid
+		returnData.empire = this.empire
+		returnData.name = this.name
+		returnData.ships = []
+		for (let i = 0; i < this.ships.length; i++) {
+			returnData.ships[i] = this.ships[i].Serialize();
 		}
-		return this.data
+		return returnData
 	}
 
 	DeSerialize() {

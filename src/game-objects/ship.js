@@ -13,7 +13,8 @@ class Ship extends GamePiece {
 		this.sprite=this.add(this.scene.add.sprite(0, 0, imageSheet, imageName).setScale(.5))
 		this.label=this.add(this.scene.add.text(20, 30, this.data.name+"\n"+this.data.owner));
 		this.data.imageURL = imageName
-		console.log(this.name,this.owner)
+		this.data.sheet = imageSheet
+		// console.log(this.name,this.owner)
 	}
 
 	Serialize() {

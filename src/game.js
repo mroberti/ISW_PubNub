@@ -60,7 +60,7 @@ function preload() {
 	this.load.json('ship_sheetdata', '/ships/allships.json');
 	this.load.multiatlas('ui_textures', '/ui/ui.json');
 	this.load.json('ui_sheetdata', '/ui/ui.json');
-	this.load.image("background", "/backgrounds/starfield1.png");
+	this.load.image("background", "/backgrounds/background2.jpg");
 	// The rexui plugin is required for the text box and other UI elements
 	this.load.scenePlugin({key: 'rexuiplugin', url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', sceneKey: 'rexUI'});
 	this.load.plugin('rexninepatch2plugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexninepatch2plugin.min.js', true);
@@ -76,7 +76,7 @@ function create() {
 	var federation_ship_names = this.cache.json.get('federation_ship_names');
 	var klingon_ship_names = this.cache.json.get('klingon_ship_names');
 
-	gameBoard = new GameBoard()
+	gameBoard = new GameBoard(new Date(),"d03e9034-c275-4241-b046-0ea2299dad02","Who invited the Romulans?","Several galactic powers are meeting to decide how to deal with the threat of Romulan Agression. Each player sends out [bold]one[/bold] ship to the meeting, but the Romulans launch a surprise raid. You negotiate a quick alliance and repsond to the attack.");
 	// Begin test of Gameboard and Player classes
 	for (const [uuid, name] of Object.entries(players2)) {
 		// console.log(uuid, name);
@@ -89,13 +89,7 @@ function create() {
 		}
 		var tempPlayer = new Player(data);
 		gameBoard.AddPlayer(tempPlayer);
-		console.log(tempPlayer)
 	}
-
-
-
-	console.log(ship_stats[random_item(ship_types)]);	//console.log(ship_stats["assault carrier"]);
-
 
 	// Phaser supports multiple cameras, but you can access the default camera like this:
 	const camera = this.cameras.main;
@@ -114,7 +108,7 @@ function create() {
 	shipGroup = this.make.group(groupconfig);
 
 	var background = this.add.sprite(0, 0, 'background');
-	background.setScale(8.0)
+	background.setScale(3.0)
 
 
 	this.print = this.add.text(0, 0, 'Use Arrow keys to scroll camera');
@@ -122,24 +116,28 @@ function create() {
 	// My empire graphics are for ships from empires e1,e2, and e7
 	// so I gotta do some skulduggery here. Create ships for the 4 players.
 	for (let i = 0; i < players.length; i++) {
-		gameBoard.players[i].ships = {}
 		for (let j = 0; j < 2; j++) {
 			var shipName = ""
-			if(i==0){
-				empireNumber = 1
-				shipName="USS "+random_item(federation_ship_names);
-			}
-			if(i==1){
-				empireNumber = 2
-				shipName="IKV "+random_item(klingon_ship_names);
-			}
-			if(i==2){
-				empireNumber = 7
-				shipName="USS "+random_item(federation_ship_names);
-			}
-			if(i==3){
-				empireNumber = 1
-				shipName="IKV "+random_item(klingon_ship_names);
+			switch (i) {
+				case 0:
+					empireNumber = 1
+					shipName="USS "+random_item(federation_ship_names);					
+					break;
+				case 1:
+					empireNumber = 2
+					shipName="IKV "+random_item(klingon_ship_names);				
+					break;
+				case 2:
+					empireNumber = 7
+					shipName="USS "+random_item(federation_ship_names);				
+					break;
+				case 3:
+					empireNumber = 1
+					shipName="IKV "+random_item(klingon_ship_names);					
+					break;
+									
+				default:
+					break;
 			}
 			var tempShip = new Ship(this, 1280,720);
 			var data = ship_stats[random_item(ship_types)]
@@ -155,7 +153,7 @@ function create() {
 			tempShip.setInteractive({ draggable: true });
 			//  The pointer has to be held down for 500ms before it's considered a drag
 			this.input.dragTimeThreshold = 50;
-
+			gameBoard.players[i].AddShip(tempShip)
 			this.input.on('dragstart', function (pointer, gameObject) {
 				gameObject.list[0].setTint(0xff0000);
 				this.scene.tweens.add({
@@ -169,6 +167,7 @@ function create() {
 			});
 		}
 	}
+	console.log(JSON.stringify(gameBoard.Serialize()))
 
 	this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
 		gameObject.x = dragX;
@@ -184,38 +183,7 @@ function create() {
 	presence_panel = DisplayPlayerPresence(this)
 	// console.log("Presence panel "+presence_panel.buttons[0].getElement('icon').setFillStyle(ONLINE))
 	InitLogonButtons(this)
-	InitGUIButtons(this)
-	// console.log("Testing UUID key: "+players2["d03e9034-c275-4241-b046-0ea2299dad02"])
-	this.add.rexNinePatch2({
-		x: 500, y: 450,
-		width: 250, height: 200,
-		key: "bg2",
-		columns: [20, undefined, 20],
-		rows: [20, undefined, 20],
-	})
-
-	var panel = this.rexUI.add.scrollablePanel({
-		x: 400, 
-		y: 100,
-		height:400,
-		width: 200,
-		orientation: 'x',
-        // space: { item: 50, top: 20, bottom: 20 }
-		scrollMode: 1,
-		panel: {
-			child: createRadioButton(this, players[0])
-		},
-	}).layout()
-
-	for (let i = 0; i < 4; i++) {
-		// Add new child
-		panel
-		.getElement('panel')
-		.add(
-			createRadioButton(this, players[i%3])
-		)
-	}
-	panel.layout()   
+	InitGUIButtons(this)  
 }
 
 var createTextBox = function (scene, x, y, config) {
@@ -670,10 +638,6 @@ function UpdatePresencePanel(scene){
 		  }
 		}
 	);
-	createTextBox(scene, 100, 100, {
-		wrapWidth: 500,
-	})
-	.start("now is the time for all good men to come to the aid of their country", 50);
 }
 
 function MoveForward(){
@@ -701,10 +665,11 @@ function TurnLeft(scene){
 			type: "turn left"
 		}
 	}
-	// this.pubnub.publish(publishPayload, function (status, response) {
-	// 	console.log(status, response);
-	// })
+	this.pubnub.publish(publishPayload, function (status, response) {
+		console.log(status, response);
+	})
 	console.log("Random UUID: "+PubNub.generateUUID());
+
 	UpdatePresencePanel(scene)
 }
 
@@ -723,28 +688,31 @@ function TurnRight(){
 
 	// I think once this is done, you can comment it out. Should last for
 	// The life of the channel?
-	// 
-	
-	// this.pubnub.objects.setChannelMetadata({
-	// 	channel: "my_channel",
-	// 	title: "update channel metadata",
-	// 	data: {
-	// 		name: "Ermagherd Starfleet Emergency Channel",
-	// 		description: "This frequency is for Starfleet Emergency broadcasts only.",
-	// 		moisture: "wet",
-	// 		sandwich: "tuna",
-	// 		custom: { "owner": "Federation President",
-	// 				  "location": "Earth",
-	// 				  "purpose": "Emergency",
-	// 				  "ship": JSON.stringify(ship_stats[random_item(ship_types)])
-	// 	}
-	// }
+	//
+
+	// this.pubnub.objects.removeChannelMetadata({
+	// 	channel: "my_channel"
 	// },function (status, response) {
-	// 	console.log(status, response.data.custom.ship);
+	// 	console.log(status, response);
 	// });
-	this.pubnub.unsubscribe({
-		channels: ['my_channel']
-	})
+	
+	this.pubnub.objects.setChannelMetadata({
+		channel: "my_channel",
+		data: {
+			name:gameBoard.name,
+			description:gameBoard.description,
+			custom: {
+				board_data: JSON.stringify(gameBoard.Serialize())
+			}
+
+		}
+	},function (status, response) {
+		console.log(status, response);
+	});
+	
+	// this.pubnub.unsubscribe({
+	// 	channels: ['my_channel']
+	// })
 	
 }
 
