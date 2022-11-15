@@ -11,7 +11,10 @@ class GameBoard {
 
 	Serialize() {
 		var returnData = {}
+		returnData.owner = this.owner
 		returnData.players = []
+		returnData.description = this.description
+		returnData.name = this.name
 		// We're gonna return the data object to make sure that
 		// we can restore the object later, or for updating
 		// game state
