@@ -76,7 +76,7 @@ function create() {
 	var federation_ship_names = this.cache.json.get('federation_ship_names');
 	var klingon_ship_names = this.cache.json.get('klingon_ship_names');
 
-	gameBoard = new GameBoard(new Date(),"d03e9034-c275-4241-b046-0ea2299dad02","Who invited the Romulans?","Several galactic powers are meeting to decide how to deal with the threat of Romulan Agression. Each player sends out [bold]one[/bold] ship to the meeting, but the Romulans launch a surprise raid. You negotiate a quick alliance and repsond to the attack.");
+	gameBoard = new GameBoard(new Date(),"d03e9034-c275-4241-b046-0ea2299dad02","Who invited the Romulans?","Several galactic powers are meeting to decide how to deal with the threat of Romulan Aggression. Each player sends out [bold]one[/bold] ship to the meeting, but the Romulans launch a surprise raid. You negotiate a quick alliance and respond to the attack.");
 	// Begin test of Gameboard and Player classes
 	for (const [uuid, name] of Object.entries(players2)) {
 		// console.log(uuid, name);
@@ -167,7 +167,7 @@ function create() {
 			});
 		}
 	}
-	console.log(JSON.stringify(gameBoard.Serialize()))
+	console.log(gameBoard.Serialize())
 
 	this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
 		gameObject.x = dragX;
@@ -696,24 +696,36 @@ function TurnRight(){
 	// 	console.log(status, response);
 	// });
 	
+	// SET THE METADATA; Might be useful once players' 
+	// moves need to be logged, just update the ships
+	// that moved?
 	this.pubnub.objects.setChannelMetadata({
 		channel: "my_channel",
 		data: {
 			name:gameBoard.name,
-			description:gameBoard.description,
+			description:"saved_game",
 			custom: {
 				board_data: JSON.stringify(gameBoard.Serialize())
 			}
-
 		}
 	},function (status, response) {
 		console.log(status, response);
 	});
+
+	// // GET THE METADATA; Grab the board state and perform
+	// // actions against it. Move ships, damage, etc. 
+	// this.pubnub.objects.getChannelMetadata({
+	// 		channel: "my_channel"
+	// },function (status, response) {
+	// 	console.log(status, JSON.parse(response.data.custom.board_data).owner);
+	// 	// var tempString = response.data.custom.board_data;
+	// 	var tempValue = JSON.parse(response.data.custom.board_data)
+	// 	// console.log(tempValue.owner,tempValue.name)
+	// });
 	
 	// this.pubnub.unsubscribe({
 	// 	channels: ['my_channel']
 	// })
-	
 }
 
 function ProcessReceivedTurn(m){

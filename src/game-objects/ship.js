@@ -18,14 +18,15 @@ class Ship extends GamePiece {
 	}
 
 	Serialize() {
+		var returnData = {}
 		// We're gonna return the data object to make sure that
 		// we can restore the object later, or for updating
 		// game state
-		this.data.x = this.x
-		this.data.y = this.y
-		this.data.rotation = this.sprite.rotation
-		this.data.label = this.label.text
-		return this.data
+		returnData.x = this.x
+		returnData.y = this.y
+		returnData.rotation = this.sprite.rotation
+		returnData.label = this.label.text
+		return returnData
 	}
 
 	DeSerialize() {

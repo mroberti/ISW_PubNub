@@ -4,6 +4,7 @@ class GameBoard {
  		this.whose_turn = 0
 		// this.create_date = new Date()
 		this.owner = owner
+		this.created = create_date
 		this.players = []
 		this.description = description
 		this.name = name
