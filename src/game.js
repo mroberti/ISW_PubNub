@@ -531,6 +531,9 @@ function InitPubNub(uuid,scene) {
 						break;
 					case 'timeout':
 						UpdatePresencePanel(scene)
+						break;	
+					case 'leave':
+						UpdatePresencePanel(scene)
 						break;				
 					default:
 						break;
