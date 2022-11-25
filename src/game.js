@@ -61,6 +61,7 @@ function preload() {
 	this.load.multiatlas('ui_textures', '/ui/ui.json');
 	this.load.json('ui_sheetdata', '/ui/ui.json');
 	this.load.image("background", "/backgrounds/background2.jpg");
+	this.load.image("romulan", "/ui/romulan.png");
 	// The rexui plugin is required for the text box and other UI elements
 	this.load.scenePlugin({key: 'rexuiplugin', url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', sceneKey: 'rexUI'});
 	this.load.plugin('rexninepatch2plugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexninepatch2plugin.min.js', true);
@@ -184,17 +185,29 @@ function create() {
 	// console.log("Presence panel "+presence_panel.buttons[0].getElement('icon').setFillStyle(ONLINE))
 	InitLogonButtons(this)
 	InitGUIButtons(this)  
+	var tempBox = createTextBox(this, 1200, 800, 500, 200, {
+		wrapWidth: 500,
+		fixedWidth: 500,
+		fixedHeight: 65,
+	})
+	.start("[weight=900][color=orange]Mission:[/color][/weight] [weight=900][color=turquoise]Who invited the Romulans?[img=romulan][/color][/weight]\n\nSeveral galactic powers are meeting to decide how to deal with the threat of [weight=900][color=lime][shadow]Romulan Aggression[/shadow][/color][/weight]. \n\nEach player sends out [weight=900]one[/weight] ship to the meeting, but the Romulans launch a surprise raid. You negotiate a quick alliance and respond to the attack.", 50);
+
+	// var timedEvent = this.time.delayedCall(3000, EndYou, [], this);
+	
+	// function EndYou(){
+	// 	tempBox.destroy()
+	// }
 }
 
-var createTextBox = function (scene, x, y, config) {
-    var wrapWidth = 400;
-    var fixedWidth = 400;
-    var fixedHeight = 200;
+var createTextBox = function (scene, x, y, width, height, config) {
+    var wrapWidth = width;
+    var fixedWidth = width;
+    var fixedHeight = height;
     var textBox = scene.rexUI.add.textBox({
             x: x,
             y: y,
 
-            background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 20, COLOR_DARK)
+            background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 2, 0x000000)
                 .setStrokeStyle(2, COLOR_LIGHT),
 
             // text: getBuiltInText(scene, wrapWidth, fixedWidth, fixedHeight),
@@ -215,7 +228,7 @@ var createTextBox = function (scene, x, y, config) {
         .layout();
 
     textBox
-        .setInteractive({ draggable: true })
+        // .setInteractive({ draggable: true })
         .on('pointerdown', function () {
             var icon = this.getElement('action').setVisible(false);
             this.resetChildVisibleState(icon);
@@ -269,7 +282,7 @@ var getBBcodeText = function (scene, wrapWidth, fixedWidth, fixedHeight) {
             mode: 'word',
             width: wrapWidth
         },
-        maxLines: 3
+        maxLines: 30
     })
 }
 
