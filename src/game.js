@@ -669,7 +669,6 @@ function MoveForward(){
 	this.pubnub.publish(publishPayload, function (status, response) {
 		console.log(status, response);
 	})
-
 }
 
 function TurnLeft(scene){
