@@ -20,9 +20,9 @@ class GameBoard {
 		// we can restore the object later, or for updating
 		// game state
 		for (let i = 0; i < this.players.length; i++) {
-			returnData.players[i] = this.players[i].Serialize()
-
+			returnData.players[i] = this.players[i].Serialize();
 		}
+		returnData.whose_turn = returnData.players[0].uuid
 		return returnData
 	}
 

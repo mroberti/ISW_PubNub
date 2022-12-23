@@ -714,29 +714,29 @@ function TurnRight(){
 	// SET THE METADATA; Might be useful once players' 
 	// moves need to be logged, just update the ships
 	// that moved?
-	this.pubnub.objects.setChannelMetadata({
-		channel: "my_channel",
-		data: {
-			name:gameBoard.name,
-			description:"saved_game",
-			custom: {
-				board_data: JSON.stringify(gameBoard.Serialize())
-			}
-		}
-	},function (status, response) {
-		console.log(status, response);
-	});
+	// this.pubnub.objects.setChannelMetadata({
+	// 	channel: "my_channel",
+	// 	data: {
+	// 		name:gameBoard.name,
+	// 		description:"saved_game",
+	// 		custom: {
+	// 			board_data: JSON.stringify(gameBoard.Serialize())
+	// 		}
+	// 	}
+	// },function (status, response) {
+	// 	console.log(status, response);
+	// });
 
 	// // GET THE METADATA; Grab the board state and perform
 	// // actions against it. Move ships, damage, etc. 
-	// this.pubnub.objects.getChannelMetadata({
-	// 		channel: "my_channel"
-	// },function (status, response) {
-	// 	console.log(status, JSON.parse(response.data.custom.board_data).owner);
-	// 	// var tempString = response.data.custom.board_data;
-	// 	var tempValue = JSON.parse(response.data.custom.board_data)
-	// 	// console.log(tempValue.owner,tempValue.name)
-	// });
+	this.pubnub.objects.getChannelMetadata({
+			channel: "my_channel"
+	},function (status, response) {
+		console.log(status, JSON.parse(response.data.custom.board_data));
+		// var tempString = response.data.custom.board_data;
+		var tempValue = JSON.parse(response.data.custom.board_data)
+		// console.log(tempValue.owner,tempValue.name)
+	});
 	
 	// this.pubnub.unsubscribe({
 	// 	channels: ['my_channel']
