@@ -17,6 +17,8 @@ const config = {
 // this.name = this.data.name
 const channel_name =""
 
+var whose_turn = 3
+
 var presence_panel
 
 const COLOR_PRIMARY = 0xAAAAAA;
@@ -29,7 +31,7 @@ var players = ["Mukul","Mario","Marcus","Jeremy"]
 var players2 = {"d03e9034-c275-4241-b046-0ea2299dad02":"Marcus","5227a8bc-9fdc-42e3-8680-979f09df879d":"Mario","e91f6ebc-52f8-11ed-bdc3-0242ac120002":"Jeremy","ea409541-44f1-401d-8afa-833fe2e9b580":"Mukul"}
 
 var pbinitialized = false;
-var currentPlayer = null;
+
 var ship_types=["scout","transport","destroyer","dreadnought","heavy cruiser","titan","light carrier","strike carrier","assault carrier",
 "super dreadnought"]
 
@@ -330,22 +332,22 @@ function InitLogonButtons(scene){
 				// Observer's UUID = 'e91f6ebc-52f8-11ed-bdc3-0242ac120002'
 				case "Marcus":
 					InitPubNub('d03e9034-c275-4241-b046-0ea2299dad02',scene)
-					currentPlayer = 0
+					whose_turn = 0
 					buttons.destroy();
 					break;
 				case "Mario":
 					InitPubNub('5227a8bc-9fdc-42e3-8680-979f09df879d',scene)
-					currentPlayer = 1
+					whose_turn = 1
 					buttons.destroy();
 					break;
 				case "Jeremy":
 					InitPubNub('e91f6ebc-52f8-11ed-bdc3-0242ac120002',scene)
-					currentPlayer = 3
+					whose_turn = 2
 					buttons.destroy();
 					break;
 				case "Mukul":
 					InitPubNub('ea409541-44f1-401d-8afa-833fe2e9b580',scene)
-					currentPlayer = 4
+					whose_turn = 3
 					buttons.destroy();
 					break;
 				default:
@@ -540,13 +542,13 @@ function InitPubNub(uuid,scene) {
 				console.log("Presence response: User: "+p.uuid+" "+action)
 				switch (action) {
 					case 'join':
-						UpdatePresencePanel(scene)
+						updatePresencePanel(scene)
 						break;
 					case 'timeout':
-						UpdatePresencePanel(scene)
+						updatePresencePanel(scene)
 						break;	
 					case 'leave':
-						UpdatePresencePanel(scene)
+						updatePresencePanel(scene)
 						break;				
 					default:
 						break;
@@ -573,7 +575,7 @@ function InitPubNub(uuid,scene) {
 		});
 
 
-		UpdatePresencePanel(scene)		
+		updatePresencePanel(scene)		
 		// start, end, count are optional
 		// pubnub.fetchMessages(
 		// 	{
@@ -593,6 +595,15 @@ function InitPubNub(uuid,scene) {
 		// }));
 	}else{
 		console.log("PubNub already initialized")
+	}
+}
+
+function initGameBoard(data){
+	if(whose_turn == parseInt(data.whose_turn))
+	{
+		console.log("It's your turn!")
+	}else{
+		console.log("It's not your turn!")
 	}
 }
 
@@ -619,12 +630,12 @@ function update(time, delta) {
 	// }
 }
 
-function LevelSet(){
+function levelSet(){
 
 }
 
-function UpdatePresencePanel(scene){
-	console.log("UpdatePresencePanel")
+function updatePresencePanel(scene){
+	console.log("updatePresencePanel")
 	for (let h = 0; h < presence_panel.buttons.length; h++) {
 		presence_panel.buttons[h].setTexture("radio off")
 	}
@@ -661,7 +672,7 @@ function MoveForward(){
 		channel: "my_channel",
 		message: {
 			title: "game_turn_v1",
-			player: currentPlayer,
+			player: whose_turn,
 			type: "move forward",
 			// bonus:"The WYN Star Cluster stands as a huge (50 parsecs diameter) beacon at the crossroads of the Galaxy. Marking the point where the Klingon, Lyran, and Kzinti borders meet, the cluster itself was long considered uninhabitable. Surrounded by a dense cloud of highly radioactive dust, it was assumed that the entire cluster was saturated with deadly radiation. For more than a century, no one tried to find out otherwise."
 		}
@@ -676,7 +687,7 @@ function TurnLeft(scene){
 		channel: "my_channel",
 		message: {
 			title: "game_turn_v1",
-			player: currentPlayer,
+			player: whose_turn,
 			type: "turn left"
 		}
 	}
@@ -685,7 +696,7 @@ function TurnLeft(scene){
 	})
 	console.log("Random UUID: "+PubNub.generateUUID());
 
-	UpdatePresencePanel(scene)
+	updatePresencePanel(scene)
 }
 
 function TurnRight(){
@@ -693,7 +704,7 @@ function TurnRight(){
 	// 	channel: "my_channel",
 	// 	message: {
 	// 		title: "game_turn_v1",
-	// 		player: currentPlayer,
+	// 		player: whose_turn,
 	// 		type: "turn right"
 	// 	}
 	// }
@@ -732,9 +743,10 @@ function TurnRight(){
 	this.pubnub.objects.getChannelMetadata({
 			channel: "my_channel"
 	},function (status, response) {
-		console.log(status, JSON.parse(response.data.custom.board_data));
+		// console.log(status, JSON.parse(response.data.custom.board_data));
 		// var tempString = response.data.custom.board_data;
 		var tempValue = JSON.parse(response.data.custom.board_data)
+		initGameBoard(tempValue)
 		// console.log(tempValue.owner,tempValue.name)
 	});
 	
@@ -745,7 +757,7 @@ function TurnRight(){
 
 function ProcessReceivedTurn(m){
 	console.log(m.message)
-	var tempShip = shipGroup.getChildren()[currentPlayer];
+	var tempShip = shipGroup.getChildren()[whose_turn];
 	switch (m.message.type) {
 		case "move forward":
 			console.log("Move forward")
@@ -763,9 +775,9 @@ function ProcessReceivedTurn(m){
 			console.log("No actionable turn...")
 	}
 	
-	// var tempShip = shipGroup.getChildren()[currentPlayer];
+	// var tempShip = shipGroup.getChildren()[whose_turn];
 	// // Move Forward
-	// var tempShip = shipGroup.getChildren()[currentPlayer];
+	// var tempShip = shipGroup.getChildren()[whose_turn];
 	// var speed_length = 30.25;
 	// var speed_x = speed_length * Math.cos(Phaser.Math.DegToRad(tempShip.angle));
 	// var speed_y = speed_length * Math.sin(Phaser.Math.DegToRad(tempShip.angle));
@@ -781,33 +793,3 @@ function ProcessReceivedTurn(m){
 	// Turn Right
 	// tempShip.angle = (tempShip.angle+=30)%360;
 }
-
-// {
-// 	"mission": "Probing the WYN Cluster",
-// 	"description": "Metro City",
-// 	"Created": 1231231231,
-// 	"active": true,
-// 	"players": [
-// 	  {
-// 		"name": "Mario",
-// 		"ships": [
-// 		  "CR Orion",
-// 		  "CV Lyran",
-// 		  "FF Kzinti",
-// 		  "CR Orion",
-// 		  "CV Lyran",
-// 		  "FF Kzinti"
-// 		]
-// 	  },
-// 	  {
-// 		"name": "Jeremy",
-// 		"ships": [
-// 		  "DD Klingon",
-// 		  "CV Klingon",
-// 		  "FF Klingon",
-// 		  "DD Klingon"
-// 		]
-// 	  }
-// 	],
-// 	"whose turn": "Jeremy"
-//   }

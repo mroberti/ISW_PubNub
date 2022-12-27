@@ -22,7 +22,7 @@ class GameBoard {
 		for (let i = 0; i < this.players.length; i++) {
 			returnData.players[i] = this.players[i].Serialize();
 		}
-		returnData.whose_turn = returnData.players[0].uuid
+		returnData.whose_turn = 0
 		return returnData
 	}
 
@@ -30,8 +30,8 @@ class GameBoard {
 		this.players.push(player)
 	}
 
-	DeSerialize() {
-
+	DeSerialize(theData) {
+		
 	}
 
 }
