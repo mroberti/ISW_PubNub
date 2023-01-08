@@ -639,6 +639,11 @@ function updatePresencePanel(scene){
 	for (let h = 0; h < presence_panel.buttons.length; h++) {
 		presence_panel.buttons[h].setTexture("radio off")
 	}
+	var message_panel = null;
+	function deedle(){
+		message_panel.destroy();
+		console.log("deedle")
+	}
 	this.pubnub.hereNow(
 		{
 		  channels: ["my_channel"],
@@ -657,12 +662,13 @@ function updatePresencePanel(scene){
 						if(value==presence_panel.buttons[h].name){
 							console.log("ONLINE: "+value)
 							presence_panel.buttons[h].setTexture("radio on")
-							var tempBox = createTextBox(scene, 0, 800, 500, 200, {
+							message_panel = createTextBox(scene, 0, 800, 500, 200, {
 								wrapWidth: 500,
 								fixedWidth: 500,
 								fixedHeight: 65,
 							})
 							.start("Inglebert Slapdeback", 50);
+							var timer = scene.time.delayedCall(5000, deedle, [], null);  // delay in ms
 							break;						
 						}
 					}
