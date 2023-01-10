@@ -515,7 +515,7 @@ function InitPubNub(uuid,scene) {
 			channels: ["my_channel"],
 			withPresence: true
 		},  function(status) {
-			console.log(status);
+			//console.log(status);
 		});
 
 		this.pubnub.addListener({
@@ -641,7 +641,10 @@ function updatePresencePanel(scene){
 	}
 	var message_panel = null;
 	function deedle(){
-		message_panel.destroy();
+		message_panel.text = message_panel.text + " snausages!!"
+		message_panel.resume("sausages??")
+		// message_panel.start(message_panel.text)
+		// message_panel.destroy();
 		console.log("deedle")
 	}
 	this.pubnub.hereNow(
@@ -650,7 +653,7 @@ function updatePresencePanel(scene){
 		  includeState: true
 		},
 		function (status, response) {
-		  console.log(status, response);
+		//   console.log(status, response);
 		  console.log(response.channels.my_channel.occupants)
 		  for (let i = 0; i < response.channels.my_channel.occupants.length; i++) {
 			console.log("Occupant #"+i+":"+response.channels.my_channel.occupants[i].uuid);
