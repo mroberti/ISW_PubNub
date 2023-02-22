@@ -194,6 +194,133 @@ function create() {
 	})
 	.start("[weight=900][color=orange]Mission:[/color][/weight] [weight=900][color=turquoise]Who invited the Romulans?[img=romulan][/color][/weight]\n\nSeveral galactic powers are meeting to decide how to deal with the threat of [weight=900][color=lime][shadow]Romulan Aggression[/shadow][/color][/weight]. \n\nEach player sends out [weight=900]one[/weight] ship to the meeting, but the Romulans launch a surprise raid. You negotiate a quick alliance and respond to the attack.", 50);
 
+	var timedEvent = this.time.delayedCall(3000, EndYou, [], this);
+	
+	function EndYou(){
+		tempBox.destroy()
+	}
+}
+
+function create2() {
+	ship_stats = this.cache.json.get('ship_stats');
+	var federation_ship_names = this.cache.json.get('federation_ship_names');
+	var klingon_ship_names = this.cache.json.get('klingon_ship_names');
+
+	gameBoard = new GameBoard(new Date(),"d03e9034-c275-4241-b046-0ea2299dad02","Who invited the Romulans?","Several galactic powers are meeting to decide how to deal with the threat of Romulan Aggression. Each player sends out [bold]one[/bold] ship to the meeting, but the Romulans launch a surprise raid. You negotiate a quick alliance and respond to the attack.");
+	// Begin test of Gameboard and Player classes
+	for (const [uuid, name] of Object.entries(players2)) {
+		// console.log(uuid, name);
+		var data = {}
+		data.name = name
+		data.uuid = uuid
+		data.empire = Math.floor(Math.random()*3)+1
+		if(data.empire==3){
+			data.empire = 7
+		}
+		var tempPlayer = new Player(data);
+		gameBoard.AddPlayer(tempPlayer);
+	}
+
+	// Phaser supports multiple cameras, but you can access the default camera like this:
+	const camera = this.cameras.main;
+	// Set up the arrows to control the camera
+	const cursors = this.input.keyboard.createCursorKeys();
+	controls = new Phaser.Cameras.Controls.FixedKeyControl({
+		camera: camera,
+		left: cursors.left,
+		right: cursors.right,
+		up: cursors.up,
+		down: cursors.down,
+		speed: 0.5
+	});
+	console.log("camera.height = " + camera.height);
+	// var background = this.add.tileSprite(0, 0, camera.width*2, camera.height*2, 'background').setInteractive();
+	shipGroup = this.make.group(groupconfig);
+
+	var background = this.add.sprite(0, 0, 'background');
+	background.setScale(3.0)
+
+
+	this.print = this.add.text(0, 0, 'Use Arrow keys to scroll camera');
+
+	// My empire graphics are for ships from empires e1,e2, and e7
+	// so I gotta do some skulduggery here. Create ships for the 4 players.
+	for (let i = 0; i < players.length; i++) {
+		for (let j = 0; j < 2; j++) {
+			var shipName = ""
+			switch (i) {
+				case 0:
+					empireNumber = 1
+					shipName="USS "+random_item(federation_ship_names);					
+					break;
+				case 1:
+					empireNumber = 2
+					shipName="IKV "+random_item(klingon_ship_names);				
+					break;
+				case 2:
+					empireNumber = 7
+					shipName="USS "+random_item(federation_ship_names);				
+					break;
+				case 3:
+					empireNumber = 1
+					shipName="IKV "+random_item(klingon_ship_names);					
+					break;
+									
+				default:
+					break;
+			}
+			var tempShip = new Ship(this, 1280,720);
+			var data = ship_stats[random_item(ship_types)]
+			data.name = shipName
+			data.owner = players[i]
+			tempShip.InitializePiece('ship_textures', "e"+empireNumber+" "+data.shipclass+".png",data)
+			tempShip.setSize(100,100);
+			shipGroup.add(tempShip);
+			tempShip.x = rand(1, camera.width);
+			tempShip.y = rand(1, camera.height);
+			tempShip.list[0].angle = parseInt(rand(0, 11) * 30);
+			tempShip.setSize(100,100);
+			tempShip.setInteractive({ draggable: true });
+			//  The pointer has to be held down for 500ms before it's considered a drag
+			this.input.dragTimeThreshold = 50;
+			gameBoard.players[i].AddShip(tempShip)
+			this.input.on('dragstart', function (pointer, gameObject) {
+				gameObject.list[0].setTint(0xff0000);
+				this.scene.tweens.add({
+					targets: gameObject,
+					scale: .75,
+					duration: 100,
+					ease: 'Sine.easeInOut',
+					completeDelay: 1000,
+					yoyo: true
+				});
+			});
+		}
+	}
+	console.log(gameBoard.Serialize())
+
+	this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
+		gameObject.x = dragX;
+		gameObject.y = dragY;
+	});
+
+	this.input.on('dragend', function (pointer, gameObject) {
+		console.log(gameObject.name)
+		console.log("X,Y = "+gameObject.x+","+gameObject.y)
+		gameObject.list[0].clearTint();
+	});
+
+	presence_panel = DisplayPlayerPresence(this)
+	// console.log("Presence panel "+presence_panel.buttons[0].getElement('icon').setFillStyle(ONLINE))
+	InitLogonButtons(this)
+	InitGUIButtons(this)  
+	var tempBox = createTextBox(this, 1200, 800, 500, 200, {
+		wrapWidth: 500,
+		fixedWidth: 500,
+		fixedHeight: 65,
+	})
+	.start("[weight=900][color=orange]Mission:[/color][/weight] [weight=900][color=turquoise]Who invited the Romulans?[img=romulan][/color][/weight]\n\nSeveral galactic powers are meeting to decide how to deal with the threat of [weight=900][color=lime][shadow]Romulan Aggression[/shadow][/color][/weight]. \n\nEach player sends out [weight=900]one[/weight] ship to the meeting, but the Romulans launch a surprise raid. You negotiate a quick alliance and respond to the attack.", 50);
+
 	// var timedEvent = this.time.delayedCall(3000, EndYou, [], this);
 	
 	// function EndYou(){
@@ -636,10 +763,13 @@ function levelSet(){
 
 function updatePresencePanel(scene){
 	console.log("updatePresencePanel")
+	// Reset all panel buttons to OFF...
 	for (let h = 0; h < presence_panel.buttons.length; h++) {
 		presence_panel.buttons[h].setTexture("radio off")
 	}
 	var message_panel = null;
+
+	// Continue with additional text in the messae panel...
 	function deedle(){
 		message_panel.text = message_panel.text + " snausages!!"
 		message_panel.resume("sausages??")
@@ -647,13 +777,15 @@ function updatePresencePanel(scene){
 		// message_panel.destroy();
 		console.log("deedle")
 	}
+
+	// Call PubNub hereNow....
 	this.pubnub.hereNow(
 		{
 		  channels: ["my_channel"],
 		  includeState: true
 		},
 		function (status, response) {
-		//   console.log(status, response);
+		  //   console.log(status, response);
 		  console.log(response.channels.my_channel.occupants)
 		  for (let i = 0; i < response.channels.my_channel.occupants.length; i++) {
 			console.log("Occupant #"+i+":"+response.channels.my_channel.occupants[i].uuid);
